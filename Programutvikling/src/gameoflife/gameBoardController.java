@@ -17,7 +17,7 @@ import javafx.scene.layout.GridPane;
 
 /**
  *
- * @author kragg
+ * @author Mathias
  */
 public class gameBoardController implements Initializable{
     
