@@ -13,10 +13,13 @@
 
 <AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameoflife.gameBoardController">
     <children>
+        <VBox>
         <GridPane alignment="center" hgap="10" vgap="10" fx:id="gridPane1">
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
         </GridPane>
+        <Button text="Start" fx:id="startButton" onAction="#testText"/>
+        </VBox>
     </children>
 </AnchorPane>
