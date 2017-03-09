@@ -68,12 +68,12 @@ public class gameBoardController implements Initializable{
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
         int y = Integer.parseInt(buttonId.substring(p2+1));
         gameBoardModel.toggleCellState(x, y);
-        System.out.println("Du har valgt: "+x+", "+y);
+        System.out.println("You have chosen: "+x+", "+y);
         System.out.println("cell state: "+gameBoardModel.getCellState(x, y));
         
     }
     
-    private void refreshBoard(){
+    private void oldrefreshBoard(){
         for (int i=0; i<gameBoardModel.xmax; i++)
         {
             for (int j=0; j<gameBoardModel.ymax; j++)
@@ -88,6 +88,26 @@ public class gameBoardController implements Initializable{
                 }
             }
         }
+    }
+    
+    private void refreshBoard(){
+        int[] coordinates = gameBoardModel.takeNextCellChange();
+        int x = coordinates[0];
+        int y = coordinates[1];
+        String buttonId="cell_"+x+"_"+y;
+        Button button = (Button) gridPane1.lookup("#"+buttonId);
+        
+        if (gameBoardModel.getCellState(x, y)){
+            button.setText("L");
+        }
+        else{
+            button.setText("D");
+         }
+    }
+     
+    @FXML
+    private void testText(){
+        gameBoardModel.dummyPlayGame();
     }
     
 }
