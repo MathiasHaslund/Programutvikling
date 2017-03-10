@@ -110,4 +110,49 @@ public class gameBoardController implements Initializable{
         gameBoardModel.dummyPlayGame();
     }
     
+    private void gameLogic(){
+        for (int i = 1; i<gameBoardModel.xmax-1; i++){
+            for (int j = 1; j<gameBoardModel.ymax-1; j++){
+		int counter = 0;
+		
+		if (gameBoardModel.getCellState(i-1,j-1) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i-1,j) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i-1, j+1) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i, j-1) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i, j+1) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i+1, j-1) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i+1, j) == true){
+                    counter += 1;
+		}
+		if (gameBoardModel.getCellState(i+1, j+1) == true){
+                    counter += 1;
+		}
+	
+
+		if (gameBoardModel.getCellState(i, j) == true){
+                    if (counter<2 || counter>3){
+                        gameBoardModel.addToCellChangeList(i, j);
+                    }
+		}
+                else {
+                    if (counter == 3){
+			gameBoardModel.addToCellChangeList(i, j);
+                    }
+		}					
+            }
+        }
+    }
+    
 }

@@ -39,7 +39,7 @@ public class gameBoardModel {
         return cellStates [x][y];
     }
     
-    private void addToCellChangeList (int x, int y){
+    protected void addToCellChangeList (int x, int y){
         int[] coordinates = new int[2];
         coordinates[0]=x;
         coordinates[1]=y;
@@ -47,6 +47,7 @@ public class gameBoardModel {
     }
     
     protected int[] takeNextCellChange(){
+        int listLength = cellChangeList.size();
         int[] coordinates = cellChangeList.get(0);
         cellChangeList.remove(0);
         return coordinates;
