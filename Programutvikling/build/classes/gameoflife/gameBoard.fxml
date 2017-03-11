@@ -19,7 +19,8 @@
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
         </GridPane>
-        <Button text="Start" fx:id="startButton" onAction="#testText"/>
+        <Button text="Start" fx:id="startButton" onAction="#playGame"/>
+        <Button text="Step" fx:id="stepButton" onAction="#step"/>
         </VBox>
     </children>
 </AnchorPane>

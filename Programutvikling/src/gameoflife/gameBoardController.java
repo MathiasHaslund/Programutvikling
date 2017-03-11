@@ -5,6 +5,7 @@
  */
 package gameoflife;
 
+import static com.sun.deploy.trace.Trace.flush;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -41,12 +42,9 @@ public class gameBoardController implements Initializable{
             {
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
-                if (gameBoardModel.getCellState(i, j)){
-                    button.setText("L");
-                }
-                else{
-                    button.setText("D");
-                }
+                
+                refreshButton(button, gameBoardModel.getCellState(i, j));
+
                     
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
@@ -58,7 +56,6 @@ public class gameBoardController implements Initializable{
                 });
                        
                 gridPane1.add(button, i, j);
-                System.out.println(button.getId());
             }
         }
     }
@@ -68,91 +65,56 @@ public class gameBoardController implements Initializable{
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
         int y = Integer.parseInt(buttonId.substring(p2+1));
         gameBoardModel.toggleCellState(x, y);
-        System.out.println("You have chosen: "+x+", "+y);
-        System.out.println("cell state: "+gameBoardModel.getCellState(x, y));
         
     }
-    
-    private void oldrefreshBoard(){
-        for (int i=0; i<gameBoardModel.xmax; i++)
-        {
-            for (int j=0; j<gameBoardModel.ymax; j++)
-            {
-                String buttonId="cell_"+i+"_"+j;
-                Button button = (Button) gridPane1.lookup("#"+buttonId);
-                if (gameBoardModel.getCellState(i, j)){
-                    button.setText("L");
-                }
-                else{
-                    button.setText("D");
-                }
-            }
-        }
-    }
-    
+    /*Updates the view of the whole board from list*/
     private void refreshBoard(){
         int[] coordinates = gameBoardModel.takeNextCellChange();
+        refreshButtonAtCoordinates(coordinates);
+    }
+    /*refreshes the view of a single cell*/
+    private void refreshButton(Button button, boolean cellState){
+            if (cellState){
+                button.setText("X");
+            }
+            else{
+                button.setText(" ");
+            }
+    }
+    /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
+    private void refreshButtonAtCoordinates(int[] coordinates){
         int x = coordinates[0];
         int y = coordinates[1];
         String buttonId="cell_"+x+"_"+y;
         Button button = (Button) gridPane1.lookup("#"+buttonId);
-        
-        if (gameBoardModel.getCellState(x, y)){
-            button.setText("L");
-        }
-        else{
-            button.setText("D");
-         }
+        refreshButton(button, gameBoardModel.getCellState(x, y));
+
     }
      
     @FXML
-    private void testText(){
-        gameBoardModel.dummyPlayGame();
-    }
-    
-    private void gameLogic(){
-        for (int i = 1; i<gameBoardModel.xmax-1; i++){
-            for (int j = 1; j<gameBoardModel.ymax-1; j++){
-		int counter = 0;
-		
-		if (gameBoardModel.getCellState(i-1,j-1) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i-1,j) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i-1, j+1) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i, j-1) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i, j+1) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i+1, j-1) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i+1, j) == true){
-                    counter += 1;
-		}
-		if (gameBoardModel.getCellState(i+1, j+1) == true){
-                    counter += 1;
-		}
-	
-
-		if (gameBoardModel.getCellState(i, j) == true){
-                    if (counter<2 || counter>3){
-                        gameBoardModel.addToCellChangeList(i, j);
-                    }
-		}
-                else {
-                    if (counter == 3){
-			gameBoardModel.addToCellChangeList(i, j);
-                    }
-		}					
+    protected void playGame(){
+        for (int i=0; i<5; i++){
+            System.out.println("linje"+i);
+             try {
+                // Wait for 1 second.
+                Thread.sleep(1000);
             }
-        }
+            catch (InterruptedException ex) {}
+            step();
+            //flush();
+            }
     }
     
+    
+    @FXML
+    private void step (){
+        gameBoardModel.gameLogic();
+        while(true) {
+            int[] coordinates = gameBoardModel.takeNextCellChange();           
+            if (coordinates == null){
+                break;
+            }
+            refreshButtonAtCoordinates(coordinates);
+        }
+    }    
 }
