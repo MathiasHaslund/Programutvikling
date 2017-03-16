@@ -8,11 +8,14 @@ package gameoflife;
 import static com.sun.deploy.trace.Trace.flush;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.concurrent.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 
 
@@ -92,21 +95,6 @@ public class gameBoardController implements Initializable{
     }
      
     @FXML
-    protected void playGame(){
-        for (int i=0; i<5; i++){
-            System.out.println("linje"+i);
-             try {
-                // Wait for 1 second.
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException ex) {}
-            step();
-            //flush();
-            }
-    }
-    
-    
-    @FXML
     private void step (){
         gameBoardModel.gameLogic();
         while(true) {
@@ -114,7 +102,37 @@ public class gameBoardController implements Initializable{
             if (coordinates == null){
                 break;
             }
-            refreshButtonAtCoordinates(coordinates);
+            refreshButtonAtCoordinates(coordinates);            
         }
-    }    
+    }
+
+    @FXML
+    private Button startButton;
+
+    @FXML
+    private void playGame(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i=1; i<=10; i++) {
+                    final int counter = i;
+
+                    Platform.runLater(new Runnable() {
+                    @Override
+                        public void run() {
+                            if(counter == 1){
+                                startButton.setText("Stop");
+                            }
+                            step();
+                        }
+                        });
+                        try {
+                            // Wait for 1 second.
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException ex) {}
+                }
+            }
+        }).start();
+    }
 }
