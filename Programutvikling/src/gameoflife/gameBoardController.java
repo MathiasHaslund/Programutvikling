@@ -108,21 +108,33 @@ public class gameBoardController implements Initializable{
 
     @FXML
     private Button startButton;
+    
+    private boolean gameRunning = false;
+    
+    /*@FXML
+    private void startStopGame(){
+        if (gameRunning == false){
+            
+        }       
+    }*/
 
     @FXML
     private void playGame(){
+        if (gameRunning == false){
+            gameRunning = true;
+            startButton.setText("Stop");
+        }
+        else{
+            gameRunning = false;
+            startButton.setText("Start");
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i=1; i<=10; i++) {
-                    final int counter = i;
-
+                while (gameRunning == true) {
                     Platform.runLater(new Runnable() {
                     @Override
                         public void run() {
-                            if(counter == 1){
-                                startButton.setText("Stop");
-                            }
                             step();
                         }
                         });
@@ -135,4 +147,7 @@ public class gameBoardController implements Initializable{
             }
         }).start();
     }
+    
+    
+    
 }

@@ -19,8 +19,8 @@ public class gameBoardModel {
     
     private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
     private boolean cellStates[][] = new boolean[1000][1000];
-    protected int xmax = 20;//10
-    protected int ymax = 20;//10
+    protected int xmax = 50;
+    protected int ymax = 20;
     
     protected void initCellStates (){
         for (int i=0; i<xmax; i++){
