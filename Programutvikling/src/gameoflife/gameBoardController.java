@@ -5,13 +5,17 @@
  */
 package gameoflife;
 
+import static com.sun.deploy.trace.Trace.flush;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.concurrent.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 
 
@@ -41,12 +45,9 @@ public class gameBoardController implements Initializable{
             {
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
-                if (gameBoardModel.getCellState(i, j)){
-                    button.setText("L");
-                }
-                else{
-                    button.setText("D");
-                }
+                
+                refreshButton(button, gameBoardModel.getCellState(i, j));
+
                     
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
@@ -58,7 +59,6 @@ public class gameBoardController implements Initializable{
                 });
                        
                 gridPane1.add(button, i, j);
-                System.out.println(button.getId());
             }
         }
     }
@@ -68,46 +68,86 @@ public class gameBoardController implements Initializable{
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
         int y = Integer.parseInt(buttonId.substring(p2+1));
         gameBoardModel.toggleCellState(x, y);
-        System.out.println("You have chosen: "+x+", "+y);
-        System.out.println("cell state: "+gameBoardModel.getCellState(x, y));
         
     }
-    
-    private void oldrefreshBoard(){
-        for (int i=0; i<gameBoardModel.xmax; i++)
-        {
-            for (int j=0; j<gameBoardModel.ymax; j++)
-            {
-                String buttonId="cell_"+i+"_"+j;
-                Button button = (Button) gridPane1.lookup("#"+buttonId);
-                if (gameBoardModel.getCellState(i, j)){
-                    button.setText("L");
-                }
-                else{
-                    button.setText("D");
-                }
-            }
-        }
-    }
-    
+    /*Updates the view of the whole board from list*/
     private void refreshBoard(){
         int[] coordinates = gameBoardModel.takeNextCellChange();
+        refreshButtonAtCoordinates(coordinates);
+    }
+    /*refreshes the view of a single cell*/
+    private void refreshButton(Button button, boolean cellState){
+            if (cellState){
+                button.setText("X");
+            }
+            else{
+                button.setText(" ");
+            }
+    }
+    /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
+    private void refreshButtonAtCoordinates(int[] coordinates){
         int x = coordinates[0];
         int y = coordinates[1];
         String buttonId="cell_"+x+"_"+y;
         Button button = (Button) gridPane1.lookup("#"+buttonId);
-        
-        if (gameBoardModel.getCellState(x, y)){
-            button.setText("L");
-        }
-        else{
-            button.setText("D");
-         }
+        refreshButton(button, gameBoardModel.getCellState(x, y));
+
     }
      
     @FXML
-    private void testText(){
-        gameBoardModel.dummyPlayGame();
+    private void step (){
+        gameBoardModel.gameLogic();
+        while(true) {
+            int[] coordinates = gameBoardModel.takeNextCellChange();           
+            if (coordinates == null){
+                break;
+            }
+            refreshButtonAtCoordinates(coordinates);            
+        }
     }
+
+    @FXML
+    private Button startButton;
+    
+    private boolean gameRunning = false;
+    
+    /*@FXML
+    private void startStopGame(){
+        if (gameRunning == false){
+            
+        }       
+    }*/
+
+    @FXML
+    private void playGame(){
+        if (gameRunning == false){
+            gameRunning = true;
+            startButton.setText("Stop");
+        }
+        else{
+            gameRunning = false;
+            startButton.setText("Start");
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (gameRunning == true) {
+                    Platform.runLater(new Runnable() {
+                    @Override
+                        public void run() {
+                            step();
+                        }
+                        });
+                        try {
+                            // Wait for 1 second.
+                            Thread.sleep(1000);
+                        }
+                        catch (InterruptedException ex) {}
+                }
+            }
+        }).start();
+    }
+    
+    
     
 }
