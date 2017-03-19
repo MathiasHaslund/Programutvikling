@@ -46,7 +46,8 @@ public class gameBoardController implements Initializable{
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
                 
-                refreshButton(button, gameBoardModel.getCellState(i, j));
+                /*Does not use the game board cell object for improved performance*/
+                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
 
                     
                 button.setId(buttonId);
@@ -72,8 +73,29 @@ public class gameBoardController implements Initializable{
     }
     /*Updates the view of the whole board from list*/
     private void refreshBoard(){
-        int[] coordinates = gameBoardModel.takeNextCellChange();
-        refreshButtonAtCoordinates(coordinates);
+        gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
+        refreshButtonAtCoordinates(gameBoardCell);
+    }
+    
+    @FXML
+    private void clearBoard(){
+        if (gameRunning == true){
+            startStopGame();
+        }
+        gameBoardModel.initCellStates();
+        rePaintBoard();
+        
+    }
+    
+    @FXML
+    private void rePaintBoard(){
+        for (int i = 0; i<gameBoardModel.xmax; i++){
+            for (int j = 0; j<gameBoardModel.ymax; j++){
+                String buttonId="cell_"+i+"_"+j;
+                Button button = (Button) gridPane1.lookup("#"+buttonId);
+                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
+            }
+        }
     }
     /*refreshes the view of a single cell*/
     private void refreshButton(Button button, boolean cellState){
@@ -85,24 +107,21 @@ public class gameBoardController implements Initializable{
             }
     }
     /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
-    private void refreshButtonAtCoordinates(int[] coordinates){
-        int x = coordinates[0];
-        int y = coordinates[1];
-        String buttonId="cell_"+x+"_"+y;
+    private void refreshButtonAtCoordinates(gameBoardCell gameBoardCell){        
+        String buttonId="cell_"+gameBoardCell.getX()+"_"+gameBoardCell.getY();
         Button button = (Button) gridPane1.lookup("#"+buttonId);
-        refreshButton(button, gameBoardModel.getCellState(x, y));
-
+        refreshButton(button, gameBoardCell.isAlive());
     }
      
     @FXML
     private void step (){
         gameBoardModel.gameLogic();
         while(true) {
-            int[] coordinates = gameBoardModel.takeNextCellChange();           
-            if (coordinates == null){
+            gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
+            if (gameBoardCell == null){
                 break;
             }
-            refreshButtonAtCoordinates(coordinates);            
+            refreshButtonAtCoordinates(gameBoardCell);            
         }
     }
 
@@ -119,15 +138,15 @@ public class gameBoardController implements Initializable{
     }*/
 
     @FXML
-    private void playGame(){
-        if (gameRunning == false){
-            gameRunning = true;
-            startButton.setText("Stop");
-        }
-        else{
+    private void startStopGame(){
+        if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
-        }
+            return;
+        }        
+        gameRunning = true;
+        startButton.setText("Stop");            
+                
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -140,7 +159,7 @@ public class gameBoardController implements Initializable{
                         });
                         try {
                             // Wait for 1 second.
-                            Thread.sleep(1000);
+                            Thread.sleep(gameBoardModel.getCurrentTickTime());
                         }
                         catch (InterruptedException ex) {}
                 }

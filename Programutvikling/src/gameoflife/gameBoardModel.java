@@ -14,46 +14,53 @@ import java.util.concurrent.TimeUnit;
  * @author Espen
  */
 public class gameBoardModel {
+    /*always between 0 and 1. lower value is slower*/
+    private float gameSpeed = 0.0f;
+    /*tick time in miliseconds*/
+    private int minTickTime = 100;
+    private int maxTickTime = 1000;
+    private int currentTickTime = (int)(maxTickTime/(1.0+gameSpeed*9.0));
     
-    private float gameSpeed = 0f;
-    
-    private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
-    private boolean cellStates[][] = new boolean[1000][1000];
+    private ArrayList<gameBoardCell> cellChangeList = new ArrayList<gameBoardCell>();
+    //private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
+    private boolean cellIsAliveArray[][] = new boolean[1000][1000];
     protected int xmax = 50;
     protected int ymax = 20;
+    
+    /*tick time in miliseconds*/
+    protected int getCurrentTickTime(){
+        return currentTickTime;
+    }
     
     protected void initCellStates (){
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
-                cellStates[i][j] = false;
+                cellIsAliveArray[i][j] = false;
             }
         }
     }
     
     protected void toggleCellState (int x, int y){
-        cellStates[x][y] = !cellStates [x][y];
+        cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         addToCellChangeList(x, y);
     }
     
-    protected boolean getCellState(int x, int y){
-        return cellStates [x][y];
+    protected boolean getCellIsAlive(int x, int y){
+        return cellIsAliveArray [x][y];
     }
     
-    protected void addToCellChangeList (int x, int y){
-        int[] coordinates = new int[2];
-        coordinates[0]=x;
-        coordinates[1]=y;
-        cellChangeList.add(coordinates);
+    protected void addToCellChangeList (int x, int y){        
+        cellChangeList.add(new gameBoardCell(x, y, cellIsAliveArray));
     }
     
-    protected int[] takeNextCellChange(){
+    protected gameBoardCell takeNextCellChange(){
         int listLength = cellChangeList.size();
         if (listLength==0){
             return null;
         }
-        int[] coordinates = cellChangeList.get(0);
+        gameBoardCell gameBoardCell = cellChangeList.get(0);
         cellChangeList.remove(0);
-        return coordinates;
+        return gameBoardCell;
     }
     
     protected void setGameSpeed(float speed){
@@ -83,7 +90,7 @@ public class gameBoardModel {
                         if ((xn == x && yn == y) || isOutsideBoard(xn, yn)){
                             continue;
                         }
-                        if (getCellState(xn,yn) == true){
+                        if (getCellIsAlive(xn,yn) == true){
                             counter ++;
                         }
                     }
@@ -95,7 +102,7 @@ public class gameBoardModel {
         for (int i = 0; i<xmax; i++){
             for (int j = 0; j<ymax; j++){
 		int counter = countLiveNeighbours(i, j);
-		if (getCellState(i, j) == true){
+		if (getCellIsAlive(i, j) == true){
                     if (counter<2 || counter>3){
                         addToCellChangeList(i, j);
                     }
@@ -108,10 +115,10 @@ public class gameBoardModel {
             }
         }
         for (int i = 0; i<cellChangeList.size(); i++){
-            int[] coordinates = cellChangeList.get(i);
-            int x = coordinates[0];
-            int y = coordinates[1];
-            cellStates[x][y] = !cellStates [x][y];
+            gameBoardCell gameBoardCell = cellChangeList.get(i);
+            int x = gameBoardCell.getX();
+            int y = gameBoardCell.getY();
+            cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         }
     }
 }
