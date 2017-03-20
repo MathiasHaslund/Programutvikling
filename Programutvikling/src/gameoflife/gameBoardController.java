@@ -49,7 +49,8 @@ public class gameBoardController implements Initializable{
                 /*Does not use the game board cell object for improved performance*/
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
 
-                    
+                button.setScaleX(1);
+                button.setScaleY(1);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override

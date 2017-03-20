@@ -12,11 +12,14 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameoflife.gameBoardController">
+    <stylesheets>
+    <URL value="@GameOfLife.css"/>
+    </stylesheets>
     <children>
         <VBox>
-        <GridPane alignment="center" hgap="10" vgap="10" fx:id="gridPane1">
+        <GridPane alignment="center" hgap="0" vgap="0" fx:id="gridPane1">
             <padding>
-                <Insets top="25" right="25" bottom="25" left="25"/>
+                <Insets top="5" right="5" bottom="5" left="5"/>
             </padding>
         </GridPane>
         <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
