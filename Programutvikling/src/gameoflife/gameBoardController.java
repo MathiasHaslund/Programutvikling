@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.*;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +24,9 @@ import javafx.scene.layout.GridPane;
  *
  * @author Mathias
  */
+
+
+
 public class gameBoardController implements Initializable{
     
     gameBoardModel gameBoardModel = new gameBoardModel();
@@ -36,19 +40,28 @@ public class gameBoardController implements Initializable{
     @FXML
     private GridPane gridPane1;
     
+    private static final PseudoClass LIVE_PSEUDO_CLASS =
+    PseudoClass.getPseudoClass("live");
+    
+    private Button cellViewArray[][];
+    
     @FXML
     private void initBoard() {
         gameBoardModel.initCellStates();
+        cellViewArray = new Button[gameBoardModel.xmax][gameBoardModel.ymax];
         for (int i=0; i<gameBoardModel.xmax; i++)
         {
             for (int j=0; j<gameBoardModel.ymax; j++)
             {
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
+                cellViewArray[i][j] = button;
                 
-                refreshButton(button, gameBoardModel.getCellState(i, j));
-
-                    
+                /*Does not use the game board cell object for improved performance*/
+                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
+                
+                button.setMinSize(30, 30);
+                button.setMaxSize(50, 50);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override
@@ -72,37 +85,52 @@ public class gameBoardController implements Initializable{
     }
     /*Updates the view of the whole board from list*/
     private void refreshBoard(){
-        int[] coordinates = gameBoardModel.takeNextCellChange();
-        refreshButtonAtCoordinates(coordinates);
+        gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
+        refreshButtonAtCoordinates(gameBoardCell);
+    }
+    
+    @FXML
+    private void clearBoard(){
+        if (gameRunning == true){
+            startStopGame();
+        }
+        gameBoardModel.initCellStates();
+        rePaintBoard();        
+    }
+    
+    @FXML
+    private void rePaintBoard(){
+        for (int i = 0; i<gameBoardModel.xmax; i++){
+            for (int j = 0; j<gameBoardModel.ymax; j++){
+                Button button = cellViewArray[i][j];
+                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
+            }
+        }
     }
     /*refreshes the view of a single cell*/
     private void refreshButton(Button button, boolean cellState){
             if (cellState){
-                button.setText("X");
+                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
             }
             else{
-                button.setText(" ");
+                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);
             }
     }
     /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
-    private void refreshButtonAtCoordinates(int[] coordinates){
-        int x = coordinates[0];
-        int y = coordinates[1];
-        String buttonId="cell_"+x+"_"+y;
-        Button button = (Button) gridPane1.lookup("#"+buttonId);
-        refreshButton(button, gameBoardModel.getCellState(x, y));
-
+    private void refreshButtonAtCoordinates(gameBoardCell gameBoardCell){        
+        Button button = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
+        refreshButton(button, gameBoardCell.isAlive());
     }
      
     @FXML
     private void step (){
         gameBoardModel.gameLogic();
         while(true) {
-            int[] coordinates = gameBoardModel.takeNextCellChange();           
-            if (coordinates == null){
+            gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
+            if (gameBoardCell == null){
                 break;
             }
-            refreshButtonAtCoordinates(coordinates);            
+            refreshButtonAtCoordinates(gameBoardCell);            
         }
     }
 
@@ -119,15 +147,15 @@ public class gameBoardController implements Initializable{
     }*/
 
     @FXML
-    private void playGame(){
-        if (gameRunning == false){
-            gameRunning = true;
-            startButton.setText("Stop");
-        }
-        else{
+    private void startStopGame(){
+        if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
-        }
+            return;
+        }        
+        gameRunning = true;
+        startButton.setText("Stop");            
+                
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -140,7 +168,7 @@ public class gameBoardController implements Initializable{
                         });
                         try {
                             // Wait for 1 second.
-                            Thread.sleep(1000);
+                            Thread.sleep(gameBoardModel.getCurrentTickTime());
                         }
                         catch (InterruptedException ex) {}
                 }
