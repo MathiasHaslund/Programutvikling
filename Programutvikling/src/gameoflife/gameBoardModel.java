@@ -19,13 +19,14 @@ public class gameBoardModel {
     /*tick time in miliseconds*/
     private int minTickTime = 100;
     private int maxTickTime = 1000;
-    private int currentTickTime = (int)(maxTickTime/(1.0+gameSpeed*9.0));
+    private int currentTickTime = (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
+    //private int currentTickTime = (int)(maxTickTime - gameSpeed*(maxTickTime - minTickTime));
     
     private ArrayList<gameBoardCell> cellChangeList = new ArrayList<gameBoardCell>();
     //private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
-    private boolean cellIsAliveArray[][] = new boolean[1000][1000];
-    protected int xmax = 20;
-    protected int ymax = 20;
+    private boolean cellIsAliveArray[][]; //new boolean[1000][1000];
+    protected int xmax = 30;
+    protected int ymax = 30;
     
     /*tick time in miliseconds*/
     protected int getCurrentTickTime(){
@@ -33,6 +34,7 @@ public class gameBoardModel {
     }
     
     protected void initCellStates (){
+        cellIsAliveArray = new boolean[xmax][ymax];
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
                 cellIsAliveArray[i][j] = false;
@@ -72,7 +74,7 @@ public class gameBoardModel {
 
 
     private boolean isOutsideBoard(int x, int y){
-        if (x<0 || x>xmax || y<0 || y>ymax){
+        if (x<0 || x>=xmax || y<0 || y>=ymax){
             return true;
         }
         else{

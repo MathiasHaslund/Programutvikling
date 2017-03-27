@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.*;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -23,6 +24,9 @@ import javafx.scene.layout.GridPane;
  *
  * @author Mathias
  */
+
+
+
 public class gameBoardController implements Initializable{
     
     gameBoardModel gameBoardModel = new gameBoardModel();
@@ -36,21 +40,28 @@ public class gameBoardController implements Initializable{
     @FXML
     private GridPane gridPane1;
     
+    private static final PseudoClass LIVE_PSEUDO_CLASS =
+    PseudoClass.getPseudoClass("live");
+    
+    private Button cellViewArray[][];
+    
     @FXML
     private void initBoard() {
         gameBoardModel.initCellStates();
+        cellViewArray = new Button[gameBoardModel.xmax][gameBoardModel.ymax];
         for (int i=0; i<gameBoardModel.xmax; i++)
         {
             for (int j=0; j<gameBoardModel.ymax; j++)
             {
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
+                cellViewArray[i][j] = button;
                 
                 /*Does not use the game board cell object for improved performance*/
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
-
-                button.setScaleX(1);
-                button.setScaleY(1);
+                
+                button.setMinSize(30, 30);
+                button.setMaxSize(50, 50);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override
@@ -84,16 +95,14 @@ public class gameBoardController implements Initializable{
             startStopGame();
         }
         gameBoardModel.initCellStates();
-        rePaintBoard();
-        
+        rePaintBoard();        
     }
     
     @FXML
     private void rePaintBoard(){
         for (int i = 0; i<gameBoardModel.xmax; i++){
             for (int j = 0; j<gameBoardModel.ymax; j++){
-                String buttonId="cell_"+i+"_"+j;
-                Button button = (Button) gridPane1.lookup("#"+buttonId);
+                Button button = cellViewArray[i][j];
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
             }
         }
@@ -101,16 +110,15 @@ public class gameBoardController implements Initializable{
     /*refreshes the view of a single cell*/
     private void refreshButton(Button button, boolean cellState){
             if (cellState){
-                button.setText("X");
+                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
             }
             else{
-                button.setText(" ");
+                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);
             }
     }
     /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
     private void refreshButtonAtCoordinates(gameBoardCell gameBoardCell){        
-        String buttonId="cell_"+gameBoardCell.getX()+"_"+gameBoardCell.getY();
-        Button button = (Button) gridPane1.lookup("#"+buttonId);
+        Button button = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
         refreshButton(button, gameBoardCell.isAlive());
     }
      

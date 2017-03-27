@@ -12,6 +12,11 @@ and open the template in the editor.
     -fx-border-color: lawngreen;
     -fx-text-fill: gold;
 }
+.button:live{
+    -fx-background-color: yellow;
+    -fx-border-color: lawngreen;
+    -fx-text-fill: gold;
+}
 .children {
     -fx-background-color: lightseagreen;
     -fx-border-color: maroon;

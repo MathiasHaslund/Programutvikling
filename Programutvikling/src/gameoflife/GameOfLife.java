@@ -22,7 +22,7 @@ public class GameOfLife extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("gameBoard.fxml"));
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("GameOfLife.css");
+        scene.getStylesheets().add("gameoflife/css/GameOfLife.css");
         stage.setScene(scene);
         stage.show();
     }
