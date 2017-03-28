@@ -78,8 +78,8 @@ public class gameBoardController implements Initializable{
                 /*Does not use the game board cell object for improved performance*/
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
                 
-                button.setMinSize(20, 20);
-                button.setMaxSize(20, 20);
+                button.setMinSize(8, 8);
+                button.setMaxSize(8, 8);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override
@@ -142,7 +142,7 @@ public class gameBoardController implements Initializable{
      
     @FXML
     private void step (){
-        playSound("ffs.wav");
+        //playSound("ffs.wav");
         gameBoardModel.gameLogic();
         while(true) {
             gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
