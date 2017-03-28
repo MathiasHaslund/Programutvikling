@@ -38,12 +38,12 @@ public class gameBoardController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        /*String musicFile = "ffs.mp3";     // For example
+        /*String musicFile = "ffs.wav";     // For example
         Media sound = new Media(new File(musicFile).toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();*/
         
-        playSound("ffs.mp3");
+        playSound("ffs.wav");
         initBoard();
     }
     
@@ -142,7 +142,7 @@ public class gameBoardController implements Initializable{
      
     @FXML
     private void step (){
-        playSound("ffs.mp3");
+        playSound("ffs.wav");
         gameBoardModel.gameLogic();
         while(true) {
             gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
@@ -161,8 +161,8 @@ public class gameBoardController implements Initializable{
 
     @FXML
     private void startStopGame(){
-        String musicFile = "ffs.mp3";     // For example
-        playSound("ffs.mp3");
+        String musicFile = "ffs.wav";     // For example
+        playSound("ffs.wav");
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
