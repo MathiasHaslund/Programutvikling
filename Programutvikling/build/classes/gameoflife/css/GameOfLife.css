@@ -8,16 +8,22 @@ and open the template in the editor.
     Author     : Josef
 */
 .button {
-    -fx-background-color: royalblue;
-    -fx-border-color: lawngreen;
+    -fx-background-color: darkblue;
+    -fx-border-color: black;
     -fx-text-fill: gold;
+    -fx-font-size: 16px;
+    -fx-padding: 0px;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0px;
 }
 .button:live{
     -fx-background-color: yellow;
-    -fx-border-color: lawngreen;
+    -fx-border-color: black;
     -fx-text-fill: gold;
+    -fx-padding: 0px;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0px;
 }
-.children {
-    -fx-background-color: lightseagreen;
-    -fx-border-color: maroon;
+#AnchorPane{
+    -fx-background-color:gray ;
 }
