@@ -24,7 +24,7 @@ public class GameOfLife extends Application {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("gameoflife/css/GameOfLife.css");
         stage.setScene(scene);
-        stage.setTitle("The Game of Life (Beta 0.3)");
+        stage.setTitle("The Game of Life (Beta 0.3). now with more dududu");
         stage.show();
     }
 
