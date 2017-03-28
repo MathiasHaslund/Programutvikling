@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class gameBoardModel {
     /*always between 0 and 1. lower value is slower*/
-    private float gameSpeed = 0.0f;
+    private float gameSpeed = 0.5f;
     /*tick time in miliseconds*/
     private int minTickTime = 100;
     private int maxTickTime = 1000;
