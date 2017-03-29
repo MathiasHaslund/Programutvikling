@@ -30,7 +30,6 @@ import javafx.scene.media.MediaPlayer;
  */
 
 
-
 public class gameBoardController implements Initializable{
     
     gameBoardModel gameBoardModel = new gameBoardModel();
@@ -43,7 +42,8 @@ public class gameBoardController implements Initializable{
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();*/
         
-        playSound("ffs.wav");
+        //playSound("ffs.wav");
+        playSound("sneaky.mp3");
         initBoard();
     }
     
@@ -161,15 +161,17 @@ public class gameBoardController implements Initializable{
 
     @FXML
     private void startStopGame(){
-        String musicFile = "ffs.wav";     // For example
-        playSound("ffs.wav");
+        //playSound("ffs.wav");
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
+            playSound("startknapp.mp3");
             return;
         }        
         gameRunning = true;
-        startButton.setText("Stop");            
+        startButton.setText("Stop");
+        playSound("hello2.mp3");
+
                 
         new Thread(new Runnable() {
             @Override
