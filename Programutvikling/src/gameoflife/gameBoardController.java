@@ -78,8 +78,8 @@ public class gameBoardController implements Initializable{
                 /*Does not use the game board cell object for improved performance*/
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
                 
-                button.setMinSize(8, 8);
-                button.setMaxSize(8, 8);
+                button.setMinSize(15, 15);
+                button.setMaxSize(15, 15);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override
@@ -111,6 +111,7 @@ public class gameBoardController implements Initializable{
     private void clearBoard(){
         if (gameRunning == true){
             startStopGame();
+            
         }
         gameBoardModel.initCellStates();
         rePaintBoard();        
@@ -129,9 +130,11 @@ public class gameBoardController implements Initializable{
     private void refreshButton(Button button, boolean cellState){
             if (cellState){
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
+                
             }
             else{
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);
+                
             }
     }
     /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
@@ -165,12 +168,14 @@ public class gameBoardController implements Initializable{
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
-            playSound("startknapp.mp3");
+            playSound("what.wav");
+            playSound("failed.mp3");
             return;
         }        
         gameRunning = true;
         startButton.setText("Stop");
         playSound("hello2.mp3");
+        playSound("atst.wav");
 
                 
         new Thread(new Runnable() {
@@ -180,6 +185,7 @@ public class gameBoardController implements Initializable{
                     Platform.runLater(new Runnable() {
                     @Override
                         public void run() {
+                            playSound("deagle.mp3");
                             step();
                         }
                         });

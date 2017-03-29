@@ -25,8 +25,8 @@ public class gameBoardModel {
     private ArrayList<gameBoardCell> cellChangeList = new ArrayList<gameBoardCell>();
     //private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
     private boolean cellIsAliveArray[][]; //new boolean[1000][1000];
-    protected int xmax = 75;
-    protected int ymax = 75;
+    protected int xmax = 40;
+    protected int ymax = 30;
     
     /*tick time in miliseconds*/
     protected int getCurrentTickTime(){
