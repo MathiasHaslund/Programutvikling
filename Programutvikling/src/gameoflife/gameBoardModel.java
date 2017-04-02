@@ -13,26 +13,26 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Espen
  */
-public class gameBoardModel {
-    /*always between 0 and 1. lower value is slower*/
-    private float gameSpeed = 0.5f;
+public class gameBoardModel { 
     /*tick time in miliseconds*/
     private int minTickTime = 100;
     private int maxTickTime = 1000;
-    private int currentTickTime = (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
-    //private int currentTickTime = (int)(maxTickTime - gameSpeed*(maxTickTime - minTickTime));
+    private int currentTickTime;
+    
+    protected void setGameSpeed(double gameSpeed){
+        currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
+    }
     
     private ArrayList<gameBoardCell> cellChangeList = new ArrayList<gameBoardCell>();
-    //private ArrayList<int[]> cellChangeList = new ArrayList<int[]>();
-    private boolean cellIsAliveArray[][]; //new boolean[1000][1000];
-    protected int xmax = 40;
-    protected int ymax = 30;
+    private boolean cellIsAliveArray[][];
+    protected int xmax = 50;
+    protected int ymax = 50;
     
     /*tick time in miliseconds*/
     protected int getCurrentTickTime(){
         return currentTickTime;
     }
-    
+
     protected void initCellStates (){
         cellIsAliveArray = new boolean[xmax][ymax];
         for (int i=0; i<xmax; i++){
@@ -65,14 +65,6 @@ public class gameBoardModel {
         return gameBoardCell;
     }
     
-    protected void setGameSpeed(float speed){
-        if (speed >=0 && speed <=1){
-            gameSpeed = speed;
-        }
-        
-    } 
-
-
     private boolean isOutsideBoard(int x, int y){
         if (x<0 || x>=xmax || y<0 || y>=ymax){
             return true;

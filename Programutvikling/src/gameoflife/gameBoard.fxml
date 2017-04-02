@@ -20,7 +20,10 @@
             </padding>
         </GridPane>
         <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
-        <Button text="Step" fx:id="stepButton" onAction="#step"/>
+        <HBox>            
+            <Button text="Step" fx:id="stepButton" onAction="#step"/>
+            <Slider fx:id="speedSlider" max="1" value="0.5"/>
+        </HBox>
         <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
         </VBox>
     </children>

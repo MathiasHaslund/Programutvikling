@@ -10,6 +10,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.*;
 import javafx.concurrent.*;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
@@ -37,24 +39,37 @@ public class gameBoardController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        /*String musicFile = "ffs.wav";     // For example
-        Media sound = new Media(new File(musicFile).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();*/
+
         
-        //playSound("ffs.wav");
+
         playSound("sneaky.mp3");
+        initSlider ();
         initBoard();
     }
     
+  
+    MediaPlayer mediaPlayer;
     @FXML
     private void playSound(String soundName){
         String soundString = soundName;
         Media sound = new Media(new File(soundString).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
     }
     
+    @FXML
+    private Slider speedSlider;
+    @FXML
+    private void initSlider (){
+        gameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
+        speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    System.out.println(new_val.doubleValue());
+                    gameBoardModel.setGameSpeed(new_val.doubleValue());                    
+            }
+        });
+    }
     @FXML
     private GridPane gridPane1;
     
@@ -168,14 +183,14 @@ public class gameBoardController implements Initializable{
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
-            playSound("what.wav");
-            playSound("failed.mp3");
+            //playSound("what.wav");
+            //playSound("failed.mp3");
             return;
         }        
         gameRunning = true;
         startButton.setText("Stop");
-        playSound("hello2.mp3");
-        playSound("atst.wav");
+        //playSound("hello2.mp3");
+        //playSound("atst.wav");
 
                 
         new Thread(new Runnable() {
@@ -185,7 +200,7 @@ public class gameBoardController implements Initializable{
                     Platform.runLater(new Runnable() {
                     @Override
                         public void run() {
-                            playSound("deagle.mp3");
+                            //playSound("deagle.mp3");
                             step();
                         }
                         });
