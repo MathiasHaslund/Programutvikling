@@ -12,9 +12,6 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameoflife.gameBoardController" fx:id="anchor">
-    <!--<stylesheets>
-    <URL value="@css/GameOfLife.css"/>
-    </stylesheets>-->
     <children>
         <VBox>
         <GridPane alignment="center" hgap="0" vgap="0" fx:id="gridPane1">
@@ -23,7 +20,10 @@
             </padding>
         </GridPane>
         <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
-        <Button text="Step" fx:id="stepButton" onAction="#step"/>
+        <HBox>            
+            <Button text="Step" fx:id="stepButton" onAction="#step"/>
+            <Slider fx:id="speedSlider" max="1" value="0.5"/>
+        </HBox>
         <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
         </VBox>
     </children>

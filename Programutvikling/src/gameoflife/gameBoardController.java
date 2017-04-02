@@ -6,9 +6,11 @@
 package gameoflife;
 
 import static com.sun.deploy.trace.Trace.flush;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.*;
 import javafx.concurrent.*;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
@@ -17,14 +19,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 
 /**
  *
  * @author Mathias
  */
-
 
 
 public class gameBoardController implements Initializable{
@@ -34,9 +39,37 @@ public class gameBoardController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
+
+        
+
+        playSound("sneaky.mp3");
+        initSlider ();
         initBoard();
     }
     
+  
+    MediaPlayer mediaPlayer;
+    @FXML
+    private void playSound(String soundName){
+        String soundString = soundName;
+        Media sound = new Media(new File(soundString).toURI().toString());
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+    }
+    
+    @FXML
+    private Slider speedSlider;
+    @FXML
+    private void initSlider (){
+        gameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
+        speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                Number old_val, Number new_val) {
+                    System.out.println(new_val.doubleValue());
+                    gameBoardModel.setGameSpeed(new_val.doubleValue());                    
+            }
+        });
+    }
     @FXML
     private GridPane gridPane1;
     
@@ -60,8 +93,8 @@ public class gameBoardController implements Initializable{
                 /*Does not use the game board cell object for improved performance*/
                 refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
                 
-                button.setMinSize(30, 30);
-                button.setMaxSize(50, 50);
+                button.setMinSize(15, 15);
+                button.setMaxSize(15, 15);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                     @Override
@@ -93,6 +126,7 @@ public class gameBoardController implements Initializable{
     private void clearBoard(){
         if (gameRunning == true){
             startStopGame();
+            
         }
         gameBoardModel.initCellStates();
         rePaintBoard();        
@@ -111,9 +145,11 @@ public class gameBoardController implements Initializable{
     private void refreshButton(Button button, boolean cellState){
             if (cellState){
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
+                
             }
             else{
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);
+                
             }
     }
     /*gets the cell ID of view cell by deconstructing coordinates from array, and sends it for view refreshing */
@@ -124,6 +160,7 @@ public class gameBoardController implements Initializable{
      
     @FXML
     private void step (){
+        //playSound("ffs.wav");
         gameBoardModel.gameLogic();
         while(true) {
             gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
@@ -138,23 +175,23 @@ public class gameBoardController implements Initializable{
     private Button startButton;
     
     private boolean gameRunning = false;
-    
-    /*@FXML
-    private void startStopGame(){
-        if (gameRunning == false){
-            
-        }       
-    }*/
+
 
     @FXML
     private void startStopGame(){
+        //playSound("ffs.wav");
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
+            //playSound("what.wav");
+            //playSound("failed.mp3");
             return;
         }        
         gameRunning = true;
-        startButton.setText("Stop");            
+        startButton.setText("Stop");
+        //playSound("hello2.mp3");
+        //playSound("atst.wav");
+
                 
         new Thread(new Runnable() {
             @Override
@@ -163,6 +200,7 @@ public class gameBoardController implements Initializable{
                     Platform.runLater(new Runnable() {
                     @Override
                         public void run() {
+                            //playSound("deagle.mp3");
                             step();
                         }
                         });
