@@ -19,12 +19,20 @@
                 <Insets top="5" right="5" bottom="5" left="5"/>
             </padding>
         </GridPane>
-        <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
+        <HBox fx:id="firstHBox">
+            <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
+            <Label text="Select speed" fx:id="textForSlider" />
+        </HBox>
         <HBox>            
             <Button text="Step" fx:id="stepButton" onAction="#step"/>
             <Slider fx:id="speedSlider" max="1" value="0.5"/>
+                        
         </HBox>
-        <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
+        <HBox fx:id="thirdHBox">
+            <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
+            <Label text="Number of steps: "  />
+            <Label fx:id="roundCounter" text="0"/>    
+        </HBox>
         </VBox>
     </children>
 </AnchorPane>

@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
@@ -108,7 +109,8 @@ public class gameBoardController implements Initializable{
             }
         }
     }
-    private void writeCellClickToModel(String buttonId){   
+    private void writeCellClickToModel(String buttonId){
+        //playSound("hello2.mp3");
         int p1 = buttonId.indexOf("_",0);
         int p2 = buttonId.indexOf("_",p1+1);
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
@@ -157,13 +159,17 @@ public class gameBoardController implements Initializable{
         Button button = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
         refreshButton(button, gameBoardCell.isAlive());
     }
-     
+    private int counter;
     @FXML
     private void step (){
         //playSound("ffs.wav");
         gameBoardModel.gameLogic();
-        while(true) {
-            gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();           
+        counter++;
+        String counterText = Integer.toString(counter);
+        roundCounter.setText(counterText);
+        
+        while(true) {           
+            gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
             if (gameBoardCell == null){
                 break;
             }
@@ -186,7 +192,9 @@ public class gameBoardController implements Initializable{
             //playSound("what.wav");
             //playSound("failed.mp3");
             return;
-        }        
+        }   
+        
+
         gameRunning = true;
         startButton.setText("Stop");
         //playSound("hello2.mp3");
@@ -201,7 +209,11 @@ public class gameBoardController implements Initializable{
                     @Override
                         public void run() {
                             //playSound("deagle.mp3");
+                            /*counter++;
+                            String counterText = Integer.toString(counter);
+                            roundCounter.setText(counterText);*/
                             step();
+                            
                         }
                         });
                         try {
@@ -213,6 +225,9 @@ public class gameBoardController implements Initializable{
             }
         }).start();
     }
+    
+    @FXML
+    private Label roundCounter;
     
     
     

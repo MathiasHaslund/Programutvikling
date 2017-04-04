@@ -24,6 +24,24 @@ and open the template in the editor.
     -fx-border-width: 1px;
     -fx-border-radius: 0px;
 }
+.label{
+    -fx-alignment: center;
+    -fx-text-fill: gold;
+    -fx-font-size: 16px;
+}
+#firstHBox{
+    -fx-spacing: 20;
+}
+#thirdHBox{
+    -fx-spacing: 5;
+}
+#speedSlider{
+    -fx-fill: green;
+    -fx-font-size: 16px;
+    -fx-padding: 0px;
+    -fx-border-width: 1px;
+    -fx-border-radius: 0px;
+}
 #AnchorPane{
     -fx-background-color:gray ;
 }
