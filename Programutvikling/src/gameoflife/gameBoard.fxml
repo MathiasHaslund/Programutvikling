@@ -14,7 +14,7 @@
 <AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gameoflife.gameBoardController" fx:id="anchor">
     <children>
         <VBox>
-        <GridPane alignment="center" hgap="0" vgap="0" fx:id="gridPane1">
+        <GridPane alignment="center" hgap="0" vgap="0" fx:id="gameGrid">
             <padding>
                 <Insets top="5" right="5" bottom="5" left="5"/>
             </padding>
@@ -31,7 +31,8 @@
         <HBox fx:id="thirdHBox">
             <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
             <Label text="Number of steps: "  />
-            <Label fx:id="roundCounter" text="0"/>    
+            <Label fx:id="roundCounterLabel" text="0"/>
+            <Button text="debug" fx:id="debugButton" onAction="#debug" />    
         </HBox>
         </VBox>
     </children>
