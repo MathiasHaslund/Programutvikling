@@ -9,12 +9,12 @@ package gameoflife;
  *
  * @author Espen
  */
-public class gameBoardCell {
+public class GameBoardCell {
     private int x;
     private int y;
     boolean[][] cellIsAliveArray;
     
-    public gameBoardCell(int x, int y, boolean[][] cellIsAliveArray){
+    public GameBoardCell(int x, int y, boolean[][] cellIsAliveArray){
         this.x=x;
         this.y=y;
         this.cellIsAliveArray = cellIsAliveArray;

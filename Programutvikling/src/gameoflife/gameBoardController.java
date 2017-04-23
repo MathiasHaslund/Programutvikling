@@ -24,7 +24,7 @@ import javafx.scene.media.*;
  */
 
 
-public class gameBoardController implements Initializable{
+public class GameBoardController implements Initializable{
     private static final PseudoClass LIVE_PSEUDO_CLASS =
     PseudoClass.getPseudoClass("live");
     
@@ -50,59 +50,56 @@ public class gameBoardController implements Initializable{
     /**/
     private boolean gameRunning = false;
     
-    /**/
-    MediaPlayer mediaPlayer;
+   
     
     /**/
     private Button cellViewArray[][];
     
     /**/
-    gameBoardModel gameBoardModel = new gameBoardModel();
+    GameBoardModel GameBoardModel = new GameBoardModel();
+    
+    Sound Sound = new Sound();
             
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        //playSound("sneaky.mp3");
+        
+        Sound.playSound("BACKGROUND");
         initSlider ();
         initBoard();
     }
       
-    private void playSound(String soundName){
-        String soundString = soundName;
-        Media sound = new Media(new File(soundString).toURI().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
-    }
+
     
     @FXML
     private void initSlider (){
-        gameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
+        GameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
         speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
                     System.out.println(new_val.doubleValue());
-                    gameBoardModel.setGameSpeed(new_val.doubleValue());                    
+                    GameBoardModel.setGameSpeed(new_val.doubleValue());                    
             }
         });
     }
                 
     @FXML
     private void initBoard() {
-        gameBoardModel.initCellStates();
-        cellViewArray = new Button[gameBoardModel.xmax][gameBoardModel.ymax];
-        for (int i=0; i<gameBoardModel.xmax; i++)
+        GameBoardModel.initCellStates();
+        cellViewArray = new Button[GameBoardModel.xmax][GameBoardModel.ymax];
+        for (int i=0; i<GameBoardModel.xmax; i++)
         {
-            for (int j=0; j<gameBoardModel.ymax; j++)
+            for (int j=0; j<GameBoardModel.ymax; j++)
             {
                 String buttonId = "cell_"+i+"_"+j;
                 Button button = new Button();
                 cellViewArray[i][j] = button;
                 
                 /*Does not use the game board cell object for improved performance*/
-                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
+                refreshButton(button, GameBoardModel.getCellIsAlive(i, j));
                 
-                button.setMinSize(5, 5);
-                button.setMaxSize(5, 5);
+                button.setMinSize(15, 15);
+                button.setMaxSize(15, 15);
                 button.setId(buttonId);
                 button.setOnAction(new EventHandler<ActionEvent>(){
                 
@@ -145,7 +142,7 @@ public class gameBoardController implements Initializable{
                         });
                         try {
                             // Wait for 1 second.
-                            Thread.sleep(gameBoardModel.getCurrentTickTime());
+                            Thread.sleep(GameBoardModel.getCurrentTickTime());
                         }
                         catch (InterruptedException ex) {}
                 }
@@ -156,16 +153,16 @@ public class gameBoardController implements Initializable{
     @FXML
     private void step (){
         //playSound("ffs.wav");
-        gameBoardModel.gameLogic();
+        GameBoardModel.gameLogic();
         roundCounter++;
         roundCounterLabel.setText(Integer.toString(roundCounter));
         long start = System.nanoTime();
         while(true) {           
-            gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
-            if (gameBoardCell == null){
+            GameBoardCell GameBoardCell = GameBoardModel.takeNextCellChange();
+            if (GameBoardCell == null){
                 break;
             }
-            refreshButtonAtCoordinates(gameBoardCell);            
+            refreshButtonAtCoordinates(GameBoardCell);            
         }
         long stop = System.nanoTime();
         System.out.println("after view update: "+((stop-start)/1000000.0));
@@ -178,15 +175,15 @@ public class gameBoardController implements Initializable{
         if (gameRunning == true){
             startStopGame();            
         }
-        gameBoardModel.initCellStates();
+        GameBoardModel.initCellStates();
         rePaintBoard();        
     }
         
     private void rePaintBoard(){
-        for (int i = 0; i<gameBoardModel.xmax; i++){
-            for (int j = 0; j<gameBoardModel.ymax; j++){
+        for (int i = 0; i<GameBoardModel.xmax; i++){
+            for (int j = 0; j<GameBoardModel.ymax; j++){
                 Button button = cellViewArray[i][j];
-                refreshButton(button, gameBoardModel.getCellIsAlive(i, j));
+                refreshButton(button, GameBoardModel.getCellIsAlive(i, j));
             }
         }
     }
@@ -197,17 +194,17 @@ public class gameBoardController implements Initializable{
         int p2 = buttonId.indexOf("_",p1+1);
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
         int y = Integer.parseInt(buttonId.substring(p2+1));
-        gameBoardModel.toggleCellState(x, y);        
+        GameBoardModel.toggleCellState(x, y);        
     }
     
     /*Updates the view of the whole board from list*/
     private void refreshBoard(){
-        gameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
-        refreshButtonAtCoordinates(gameBoardCell);
+        GameBoardCell GameBoardCell = GameBoardModel.takeNextCellChange();
+        refreshButtonAtCoordinates(GameBoardCell);
     }    
-      
+
     /**/
-    private void refreshButtonAtCoordinates(gameBoardCell gameBoardCell){        
+    private void refreshButtonAtCoordinates(GameBoardCell gameBoardCell){        
         Button button = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
         refreshButton(button, gameBoardCell.isAlive());
     }

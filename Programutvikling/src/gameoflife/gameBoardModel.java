@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Espen
  */
-public class gameBoardModel { 
+public class GameBoardModel { 
     /*tick time in miliseconds*/
     private int minTickTime = 100;
     private int maxTickTime = 1000;
@@ -23,10 +23,10 @@ public class gameBoardModel {
         currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
     }
     
-    private ArrayList<gameBoardCell> cellChangeList = new ArrayList<gameBoardCell>();
+    private ArrayList<GameBoardCell> cellChangeList = new ArrayList<GameBoardCell>();
     private boolean cellIsAliveArray[][];
-    protected int xmax = 150;
-    protected int ymax = 75;
+    protected int xmax = 30;
+    protected int ymax = 30;
     
     /*tick time in miliseconds*/
     protected int getCurrentTickTime(){
@@ -52,15 +52,15 @@ public class gameBoardModel {
     }
     
     protected void addToCellChangeList (int x, int y){        
-        cellChangeList.add(new gameBoardCell(x, y, cellIsAliveArray));
+        cellChangeList.add(new GameBoardCell(x, y, cellIsAliveArray));
     }
     
-    protected gameBoardCell takeNextCellChange(){
+    protected GameBoardCell takeNextCellChange(){
         int listLength = cellChangeList.size();
         if (listLength==0){
             return null;
         }
-        gameBoardCell gameBoardCell = cellChangeList.get(0);
+        GameBoardCell gameBoardCell = cellChangeList.get(0);
         cellChangeList.remove(0);
         return gameBoardCell;
     }
@@ -111,7 +111,7 @@ public class gameBoardModel {
         }
         long afterCount = System.nanoTime();
         for (int i = 0; i<cellChangeList.size(); i++){
-            gameBoardCell gameBoardCell = cellChangeList.get(i);
+            GameBoardCell gameBoardCell = cellChangeList.get(i);
             int x = gameBoardCell.getX();
             int y = gameBoardCell.getY();
             cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
