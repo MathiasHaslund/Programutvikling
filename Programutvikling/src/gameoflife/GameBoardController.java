@@ -25,9 +25,6 @@ import javafx.scene.media.*;
 
 
 public class GameBoardController implements Initializable{
-    /*private static final PseudoClass LIVE_PSEUDO_CLASS =
-    PseudoClass.getPseudoClass("live");
-    */
     
     /*References the button with the text "start/stop" in the gameBoard.fxml*/
     @FXML 
@@ -47,29 +44,20 @@ public class GameBoardController implements Initializable{
     
     /**/
     private int roundCounter;
-    
-    
-    
+        
     protected boolean gameRunning = false;
-    
-   
-    
-    /*
-    private Button cellViewArray[][];
-    */
+        
     private GameBoardTile cellViewArray[][];
     
     /**/
     GameBoardModel GameBoardModel = new GameBoardModel();
     
-    
-    Sound Sound = new Sound();
+    Sound sound = new Sound();
             
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        
-        Sound.playSound("BACKGROUND");
+        sound.playSound(Sound.SoundTypes.BACKGROUND);
         initSlider ();
         initBoard();
     }
@@ -119,21 +107,14 @@ public class GameBoardController implements Initializable{
     @FXML
     private void startStopGame(){
         
-        
-        //playSound("ffs.wav");
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
-            //playSound("what.wav");
-            //playSound("failed.mp3");
             return;
         }
         
-        
-
         gameRunning = true;
         startButton.setText("Stop");
-
                 
         new Thread(new Runnable() {
             @Override
@@ -157,7 +138,6 @@ public class GameBoardController implements Initializable{
     
     @FXML
     private void step (){
-        //playSound("ffs.wav");
         GameBoardModel.gameLogic();
         roundCounter++;
         roundCounterLabel.setText(Integer.toString(roundCounter));
@@ -194,7 +174,6 @@ public class GameBoardController implements Initializable{
     }
     
     private void writeCellClickToModel(String buttonId){
-        //playSound("hello2.mp3");
         int p1 = buttonId.indexOf("_",0);
         int p2 = buttonId.indexOf("_",p1+1);
         int x = Integer.parseInt(buttonId.substring(p1+1, p2));
@@ -214,17 +193,6 @@ public class GameBoardController implements Initializable{
         gameBoardTile.refreshTile(gameBoardCell.isAlive());
     }
     
-    /*refreshes the view of a single cell*/
-    /*
-    private void refreshButton(Button button, boolean cellState){
-            if (cellState){
-                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
-            }
-            else{
-                button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);  
-            }
-    }
-*/
     @FXML
     private void debug(){
         long start = System.nanoTime();
