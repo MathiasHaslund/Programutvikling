@@ -25,12 +25,13 @@ import javafx.scene.media.*;
 
 
 public class GameBoardController implements Initializable{
-    private static final PseudoClass LIVE_PSEUDO_CLASS =
+    /*private static final PseudoClass LIVE_PSEUDO_CLASS =
     PseudoClass.getPseudoClass("live");
+    */
     
     /*References the button with the text "start/stop" in the gameBoard.fxml*/
     @FXML 
-    private Button startButton;
+    protected Button startButton;
     
     /*References the grid pane that contains the squares in the main bord in gameBoard.fxml*/
     @FXML
@@ -42,21 +43,25 @@ public class GameBoardController implements Initializable{
     
     /**/
     @FXML
-    private Label roundCounterLabel;
+    protected Label roundCounterLabel;
     
     /**/
     private int roundCounter;
     
-    /**/
-    private boolean gameRunning = false;
+    
+    
+    protected boolean gameRunning = false;
     
    
     
-    /**/
+    /*
     private Button cellViewArray[][];
+    */
+    private GameBoardTile cellViewArray[][];
     
     /**/
     GameBoardModel GameBoardModel = new GameBoardModel();
+    
     
     Sound Sound = new Sound();
             
@@ -86,36 +91,35 @@ public class GameBoardController implements Initializable{
     @FXML
     private void initBoard() {
         GameBoardModel.initCellStates();
-        cellViewArray = new Button[GameBoardModel.xmax][GameBoardModel.ymax];
+        cellViewArray = new GameBoardTile[GameBoardModel.xmax][GameBoardModel.ymax];
         for (int i=0; i<GameBoardModel.xmax; i++)
         {
             for (int j=0; j<GameBoardModel.ymax; j++)
             {
-                String buttonId = "cell_"+i+"_"+j;
-                Button button = new Button();
-                cellViewArray[i][j] = button;
+                String tileId = "cell_"+i+"_"+j;
+                int tileSize = 15;
+                GameBoardTile gameBoardTile = new GameBoardTile(tileId, tileSize);
+                cellViewArray[i][j] = gameBoardTile;
                 
                 /*Does not use the game board cell object for improved performance*/
-                refreshButton(button, GameBoardModel.getCellIsAlive(i, j));
-                
-                button.setMinSize(15, 15);
-                button.setMaxSize(15, 15);
-                button.setId(buttonId);
-                button.setOnAction(new EventHandler<ActionEvent>(){
+                gameBoardTile.refreshTile(GameBoardModel.getCellIsAlive(i, j));
+                gameBoardTile.getTile().setOnAction(new EventHandler<ActionEvent>(){
                 
                     @Override
                     public void handle(ActionEvent event) {
-                        writeCellClickToModel(buttonId);
+                        writeCellClickToModel(tileId);
                         refreshBoard();
                     };
                 });                       
-                gameGrid.add(button, i, j);
+                gameGrid.add(gameBoardTile.getTile(), i, j);
             }
         }
     }
     
     @FXML
     private void startStopGame(){
+        
+        
         //playSound("ffs.wav");
         if(gameRunning == true){
             gameRunning = false;
@@ -123,7 +127,8 @@ public class GameBoardController implements Initializable{
             //playSound("what.wav");
             //playSound("failed.mp3");
             return;
-        }   
+        }
+        
         
 
         gameRunning = true;
@@ -147,7 +152,7 @@ public class GameBoardController implements Initializable{
                         catch (InterruptedException ex) {}
                 }
             }
-        }).start();
+        }).start();        
     }
     
     @FXML
@@ -182,8 +187,8 @@ public class GameBoardController implements Initializable{
     private void rePaintBoard(){
         for (int i = 0; i<GameBoardModel.xmax; i++){
             for (int j = 0; j<GameBoardModel.ymax; j++){
-                Button button = cellViewArray[i][j];
-                refreshButton(button, GameBoardModel.getCellIsAlive(i, j));
+                GameBoardTile gameBoardTile = cellViewArray[i][j];
+                gameBoardTile.refreshTile(GameBoardModel.getCellIsAlive(i, j));
             }
         }
     }
@@ -204,12 +209,13 @@ public class GameBoardController implements Initializable{
     }    
 
     /**/
-    private void refreshButtonAtCoordinates(GameBoardCell gameBoardCell){        
-        Button button = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
-        refreshButton(button, gameBoardCell.isAlive());
+    protected void refreshButtonAtCoordinates(GameBoardCell gameBoardCell){        
+        GameBoardTile gameBoardTile = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
+        gameBoardTile.refreshTile(gameBoardCell.isAlive());
     }
     
     /*refreshes the view of a single cell*/
+    /*
     private void refreshButton(Button button, boolean cellState){
             if (cellState){
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);
@@ -218,6 +224,7 @@ public class GameBoardController implements Initializable{
                 button.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);  
             }
     }
+*/
     @FXML
     private void debug(){
         long start = System.nanoTime();
