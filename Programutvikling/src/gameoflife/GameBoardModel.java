@@ -25,8 +25,23 @@ public class GameBoardModel {
     
     private ArrayList<GameBoardCell> cellChangeList = new ArrayList<GameBoardCell>();
     private boolean cellIsAliveArray[][];
-    protected int xmax = 30;
-    protected int ymax = 30;
+    private int xmax = 10;
+    private int ymax = 15;
+    
+    protected int getXmax(){
+        return xmax;
+    }
+    
+    protected int getYmax(){
+        return ymax;
+    }
+    protected void setXmax(int xmax){
+        this.xmax= xmax;
+    }
+    
+    protected void setYmax(int ymax){
+        this.ymax = ymax;
+    }
     
     /*tick time in miliseconds*/
     protected int getCurrentTickTime(){
@@ -35,6 +50,10 @@ public class GameBoardModel {
 
     protected void initCellStates (){
         cellIsAliveArray = new boolean[xmax][ymax];
+        initCellStatesFromArray(cellIsAliveArray);
+    }
+    
+    protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
                 cellIsAliveArray[i][j] = false;
