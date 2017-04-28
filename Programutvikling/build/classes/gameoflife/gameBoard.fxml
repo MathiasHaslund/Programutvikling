@@ -20,19 +20,24 @@
             </padding>
         </GridPane>
         <HBox fx:id="firstHBox">
-            <Button text="Start" fx:id="startButton" onAction="#startStopGame"/>
-            <Label text="Select speed" fx:id="textForSlider" />
+            <Button text="Start" fx:id="startButton" minWidth="50" onAction="#startStopGame"/>
+            <Label text="Select speed" fx:id="textForSlider"/>
         </HBox>
-        <HBox>            
-            <Button text="Step" fx:id="stepButton" onAction="#step"/>
-            <Slider fx:id="speedSlider" max="1" value="0.5"/>
-                        
-        </HBox>
-        <HBox fx:id="thirdHBox">
-            <Button text="Clear" fx:id="clearButton" onAction="#clearBoard"/>
+        <HBox fx:id="secondHbox">            
+            <Button text="Step" fx:id="stepButton" minWidth="50" onAction="#step"/>
+            <Slider fx:id="speedSlider" max="1" value="0.5"/> 
             <Label text="Number of steps: "  />
             <Label fx:id="roundCounterLabel" text="0"/>
-            <Button text="debug" fx:id="debugButton" onAction="#debug" />    
+        </HBox>
+        <HBox fx:id="thirdHBox">
+            <Button text="Resize" fx:id="resize" minWidth="50" onAction="#setBoardSize"/>
+            <TextField fx:id="X" maxWidth="30" maxHeight="30"/>  
+            <TextField fx:id="Y" maxWidth="30" maxHeight="30"/>  
+        </HBox>
+        <HBox fx:id="fourthHBox">
+            <Button text="Clear" fx:id="clearButton" minWidth="50" onAction="#clearBoard"/>
+            <Label text="X" fx:id="xl" minWidth="30"/>
+            <Label text="Y" fx:id="yl" minWidth="30"/>     
         </HBox>
         </VBox>
     </children>

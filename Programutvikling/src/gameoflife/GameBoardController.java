@@ -17,6 +17,7 @@ import javafx.css.PseudoClass;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import static javafx.scene.input.KeyCode.X;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.*;
 
@@ -62,6 +63,15 @@ public class GameBoardController implements Initializable{
      * @see step
      * Counts each tick of the game board
      */
+    
+    @FXML
+    private TextField X;
+    @FXML
+    private TextField Y;
+    @FXML
+    protected Button resize;
+    
+    
     private int roundCounter;
         
     protected boolean gameRunning = false;
@@ -229,11 +239,25 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    private void setBoardSize(){
+        String xString = X.getText();
+        String yString = Y.getText();
+        int xInt = Integer.parseInt(xString);
+        int yInt = Integer.parseInt(yString);
+        //int x = Integer.parseInt(xString);
+        //System.out.println(xInt);
+        gameBoardModel.setXmax(xInt);
+        gameBoardModel.setYmax(yInt);
+        gameGrid.getChildren().get(0);
+        gameGrid.getChildren().clear();
+        initBoard();
+    }
+    
+    @FXML
     private void debug(){
-        
-        try {
-            fileIO.writeBoardToFile(gameBoardModel);
-            fileIO.readFile();
+        //try {
+           // fileIO.writeBoardToFile(gameBoardModel);
+          //  fileIO.readFile();
             //fileIO.readTestFile();
             /*
             long start = System.nanoTime();
@@ -243,8 +267,8 @@ public class GameBoardController implements Initializable{
             long stop = System.nanoTime();
             System.out.println("after 3 steps: "+((stop-start)/1000000.0));
             */
-        } catch (IOException ex) {
-            Logger.getLogger(GameBoardController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        //} catch (IOException ex) {
+          //  Logger.getLogger(GameBoardController.class.getName()).log(Level.SEVERE, null, ex);
+        //}
     }    
 }
