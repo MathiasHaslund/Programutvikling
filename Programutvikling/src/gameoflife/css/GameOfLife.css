@@ -5,6 +5,7 @@ and open the template in the editor.
 */
 /* 
     Created on : 20-Mar-2017, 11:20:35 AM
+    Updated on : 28-Apr-2017, 3:02:44 PM
     Author     : Josef
 */
 .button {
@@ -31,16 +32,30 @@ and open the template in the editor.
 }
 #firstHBox{
     -fx-spacing: 20;
+
+}
+#secondHBox{
+    -fx-spacing: 20;
+
 }
 #thirdHBox{
     -fx-spacing: 5;
+
+}
+#fourthHBox{
+    -fx-spacing: 5;
+}
+#X{
+    -fx-padding: 0px;
+}
+#Y{
+    -fx-padding: 0; 
 }
 #speedSlider{
-    -fx-fill: green;
     -fx-font-size: 16px;
     -fx-padding: 0px;
-    -fx-border-width: 1px;
-    -fx-border-radius: 0px;
+    -fx-text-box-border: black;
+    -fx-control-inner-background: darkblue;
 }
 #AnchorPane{
     -fx-background-color:gray ;
