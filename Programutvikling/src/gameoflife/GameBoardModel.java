@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gameoflife;
 
 import java.util.ArrayList;
@@ -10,15 +5,27 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 0.7
+ * @since 0.1 (5/3/2017)
+ */
+
+/**
+ * The "Model" file that displays all the GUI elements.
  */
 public class GameBoardModel { 
-    /*tick time in miliseconds*/
+    /**
+     * Tick time in miliseconds.
+     */
     private int minTickTime = 100;
     private int maxTickTime = 1000;
     private int currentTickTime;
-    
+      /**
+     * Function for setting the speed with the slider.
+     * @see initSlider
+     * @param gameSpeed 
+     */
     protected void setGameSpeed(double gameSpeed){
         currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
     }
@@ -43,16 +50,24 @@ public class GameBoardModel {
         this.ymax = ymax;
     }
     
-    /*tick time in miliseconds*/
+    
+    /**
+     * Returns the tick time in miliseconds.
+     */
     protected int getCurrentTickTime(){
         return currentTickTime;
     }
-
+    /**
+     * Checks for the cell states adjacent to the current cell. 
+     */
     protected void initCellStates (){
         cellIsAliveArray = new boolean[xmax][ymax];
         initCellStatesFromArray(cellIsAliveArray);
     }
-    
+    /**
+     * 
+     * @param cellIsAliveArray 
+     */
     protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
@@ -60,20 +75,34 @@ public class GameBoardModel {
             }
         }
     }
-    
+    /**
+     * Changes the state of the cell.
+     * @param x
+     * @param y 
+     */
     protected void toggleCellState (int x, int y){
         cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         addToCellChangeList(x, y);
     }
-    
+     /**
+     * @param x
+     * @param y
+     * @return The cell to an alive or dead state. 
+     */
     protected boolean getCellIsAlive(int x, int y){
         return cellIsAliveArray [x][y];
     }
-    
+     /**
+     * Adds/Checks a new cell and its state.
+     * @param x
+     * @param y 
+     */
     protected void addToCellChangeList (int x, int y){        
         cellChangeList.add(new GameBoardCell(x, y, cellIsAliveArray));
     }
-    
+    /**
+     * @return Nothing if Length is Zero. 
+     */
     protected GameBoardCell takeNextCellChange(){
         int listLength = cellChangeList.size();
         if (listLength==0){
@@ -83,7 +112,11 @@ public class GameBoardModel {
         cellChangeList.remove(0);
         return gameBoardCell;
     }
-    
+      /**
+     * @param x
+     * @param y
+     * @return True if cell is inside the game board, false if not.
+     */
     private boolean isOutsideBoard(int x, int y){
         if (x<0 || x>=xmax || y<0 || y>=ymax){
             return true;
@@ -92,7 +125,12 @@ public class GameBoardModel {
             return false;
         }
     }
-    
+    /**
+     * Checks if current cell is a cell on the board.
+     * @param x
+     * @param y
+     * @return A value based on the number of living cells around one specific cell.
+     */
     private int countLiveNeighbours(int x, int y){
         int counter = 0;
 		for (int i =-1; i<=1; i++){
@@ -111,6 +149,12 @@ public class GameBoardModel {
                 }               
                 return counter;
     }
+    /**
+     * The process of the game (according to the game of life rules/logic).
+     * It counts the cells based on boolean values for alive and dead cells around.
+     * Determines whether certain cells will be dead or alive.
+     * Repeats the calculations for every cell on the game board.
+     */
     protected void gameLogic(){
         long start = System.nanoTime();
         for (int i = 0; i<xmax; i++){

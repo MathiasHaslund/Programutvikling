@@ -23,7 +23,9 @@ public class GameBoardTile {
        setTileSize(tileSize);
     }
    
-    /*refreshes the view of a single cell*/
+    /**
+     * refreshes the view of a single cell
+     */
     protected void refreshTile(boolean cellState){
             if (cellState){
                 tile.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, true);

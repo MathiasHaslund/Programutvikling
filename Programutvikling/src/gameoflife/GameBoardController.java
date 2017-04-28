@@ -22,30 +22,46 @@ import javafx.scene.media.*;
 
 
 /**
- *
- * @author Mathias
- */
+* @author Mathias Haslund
+* @author Josef Krivan
+* @version 0.7
+* @since 0.1 (5/3/2017)
+*/
 
+/**
+ * The functions and inner workings of the GUI
+ */
 
 public class GameBoardController implements Initializable{
     
-    /*References the button with the text "start/stop" in the gameBoard.fxml*/
+    /**
+    * @see gameBoard.fxml
+    * References the button with the text "start/stop" in the gameBoard.fxml
+    */
     @FXML 
     protected Button startButton;
-    
-    /*References the grid pane that contains the squares in the main bord in gameBoard.fxml*/
+     /**
+    * @see gameBoard.fxml
+    * References the grid pane that contains the squares in the main board in gameBoard.fxml 
+    */
     @FXML
     private GridPane gameGrid;
-    
-    /**/
+    /**
+     * @see gameBoard.fxml
+     * References the slider inside the GUI
+     */
     @FXML
     private Slider speedSlider;
-    
-    /**/
+    /**
+     * @see gameBoard.fxml
+     * Counts the ticks of the game board (GUI).
+     */
     @FXML
     protected Label roundCounterLabel;
-    
-    /**/
+    /**
+     * @see step
+     * Counts each tick of the game board
+     */
     private int roundCounter;
         
     protected boolean gameRunning = false;
@@ -60,6 +76,12 @@ public class GameBoardController implements Initializable{
     FileIO fileIO = new FileIO();
             
     @Override
+    /**
+     * @since 0.6
+     * Initialization for Background Music and Slider function.
+     * @see playSound
+     * @see initSlider
+     */
     public void initialize(URL location, ResourceBundle resources)
     {
         sound.playSound(Sound.SoundTypes.BACKGROUND);
@@ -70,6 +92,12 @@ public class GameBoardController implements Initializable{
 
     
     @FXML
+    /**
+     * Slider
+     * @since 0.7
+     * The functions of the slider based on the game speed.
+     * @see gameBoardModel.java (setGameSpeed)
+     */
     private void initSlider (){
         gameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
         speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -186,7 +214,9 @@ public class GameBoardController implements Initializable{
         gameBoardModel.toggleCellState(x, y);        
     }
     
-    /*Updates the view of the whole board from list*/
+    /**
+     * Updates the view of the whole board from list
+     */
     private void refreshBoard(){
         GameBoardCell GameBoardCell = gameBoardModel.takeNextCellChange();
         refreshButtonAtCoordinates(GameBoardCell);

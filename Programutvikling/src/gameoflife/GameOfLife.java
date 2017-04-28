@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Main File
  */
 package gameoflife;
 
@@ -12,9 +10,16 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 0.7
+ * @since 0.1 (5/3/2017)
  */
+
+/**
+ * The main .java file that runs all the other java,fxml and css files.
+ */
+
 public class GameOfLife extends Application {
     
     @Override
@@ -22,9 +27,15 @@ public class GameOfLife extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("GameBoard.fxml"));
         
         Scene scene = new Scene(root);
+        /**
+         * Importing the CSS into the main stage.
+         */
         scene.getStylesheets().add("gameoflife/css/GameOfLife.css");
         stage.setScene(scene);
-        stage.setTitle("The Game of Life (Beta 0.3)");
+        /**
+         * Giving the window a title.
+         */
+        stage.setTitle("The Game of Life");
         stage.show();
     }
 
