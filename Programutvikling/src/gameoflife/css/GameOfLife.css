@@ -1,11 +1,7 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : 20-Mar-2017, 11:20:35 AM
-    Author     : Josef
+    Updated on : 28-Apr-2017, 3:02:44 PM
+    Author     : Josef & Mathias
 */
 .button {
     -fx-background-color: darkblue;
@@ -23,6 +19,38 @@ and open the template in the editor.
     -fx-padding: 0px;
     -fx-border-width: 1px;
     -fx-border-radius: 0px;
+}
+.label{
+    -fx-alignment: center;
+    -fx-text-fill: gold;
+    -fx-font-size: 16px;
+}
+#firstHBox{
+    -fx-spacing: 20;
+
+}
+#secondHBox{
+    -fx-spacing: 20;
+
+}
+#thirdHBox{
+    -fx-spacing: 5;
+
+}
+#fourthHBox{
+    -fx-spacing: 5;
+}
+#X{
+    -fx-padding: 0px;
+}
+#Y{
+    -fx-padding: 0; 
+}
+#speedSlider{
+    -fx-font-size: 16px;
+    -fx-padding: 0px;
+    -fx-text-box-border: black;
+    -fx-control-inner-background: darkblue;
 }
 #AnchorPane{
     -fx-background-color:gray ;
