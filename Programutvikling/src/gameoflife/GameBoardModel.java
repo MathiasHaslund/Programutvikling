@@ -61,17 +61,17 @@ public class GameBoardModel {
      * Checks for the cell states adjacent to the current cell. 
      */
     protected void initCellStates (){
-        cellIsAliveArray = new boolean[xmax][ymax];
-        initCellStatesFromArray(cellIsAliveArray);
+        this.cellIsAliveArray = new boolean[xmax][ymax];
     }
     /**
      * 
      * @param cellIsAliveArray 
      */
     protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){
+        this.cellIsAliveArray = new boolean[xmax][ymax];
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
-                cellIsAliveArray[i][j] = false;
+                this.cellIsAliveArray[i][j] = cellIsAliveArray[i][j];
             }
         }
     }

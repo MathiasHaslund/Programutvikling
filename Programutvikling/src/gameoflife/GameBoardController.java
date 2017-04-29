@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.*;
+import javafx.collections.FXCollections;
 import javafx.css.PseudoClass;
 import javafx.event.*;
 import javafx.fxml.*;
@@ -35,6 +36,11 @@ import javafx.scene.media.*;
 
 public class GameBoardController implements Initializable{
     
+    
+    @FXML
+    private Button saveButton;
+    @FXML
+    private Button loadButton;
     /**
     * @see gameBoard.fxml
     * References the button with the text "start/stop" in the gameBoard.fxml
@@ -70,7 +76,8 @@ public class GameBoardController implements Initializable{
     private TextField Y;
     @FXML
     protected Button resize;
-    
+    @FXML
+    protected ChoiceBox saveChooser;
     
     private int roundCounter;
         
@@ -96,7 +103,7 @@ public class GameBoardController implements Initializable{
     {
         sound.playSound(Sound.SoundTypes.BACKGROUND);
         initSlider ();
-        initBoard();
+        initEmptyBoard();
     }
       
 
@@ -121,7 +128,6 @@ public class GameBoardController implements Initializable{
                 
     @FXML
     private void initBoard() {
-        gameBoardModel.initCellStates();
         cellViewArray = new GameBoardTile[gameBoardModel.getXmax()][gameBoardModel.getYmax()];
         for (int i=0; i<gameBoardModel.getXmax(); i++)
         {
@@ -148,14 +154,27 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    private void initEmptyBoard(){
+        gameBoardModel.initCellStates();
+        initBoard();
+    }
+    
+    @FXML
     private void startStopGame(){
         
-        if(gameRunning == true){
-            gameRunning = false;
-            startButton.setText("Start");
+        if(gameRunning){
+            stopGame();
+        }
+        else{        
+            startGame();
+        }        
+    }
+    
+    @FXML
+    private void startGame(){
+        if(gameRunning){
             return;
         }
-        
         gameRunning = true;
         startButton.setText("Stop");
                 
@@ -176,7 +195,16 @@ public class GameBoardController implements Initializable{
                         catch (InterruptedException ex) {}
                 }
             }
-        }).start();        
+        }).start();     
+    }
+    
+    @FXML
+    private void stopGame(){
+        if(!gameRunning){
+            return;
+        }
+        gameRunning = false;
+        startButton.setText("Start");
     }
     
     @FXML
@@ -250,7 +278,31 @@ public class GameBoardController implements Initializable{
         gameBoardModel.setYmax(yInt);
         gameGrid.getChildren().get(0);
         gameGrid.getChildren().clear();
+        initEmptyBoard();
+    }
+    
+    @FXML
+    private void loadGameFromFile() throws IOException{
+        FileIO fileIO = new FileIO();
+        boolean[][] cellIsAliveArray = fileIO.readBoardFromFile(gameBoardModel);
+        int xmax = cellIsAliveArray.length;
+        int ymax = cellIsAliveArray[0].length;
+        stopGame();
+        roundCounter = 0;
+        roundCounterLabel.setText(Integer.toString(roundCounter));
+        gameBoardModel.setXmax(xmax);
+        gameBoardModel.setYmax(ymax);
+        gameBoardModel.initCellStatesFromArray(cellIsAliveArray);
+        gameGrid.getChildren().get(0);
+        gameGrid.getChildren().clear();
         initBoard();
+    }
+    
+    @FXML
+    private void saveGameToFile() throws IOException{
+        stopGame();
+        FileIO fileIO = new FileIO();
+        fileIO.writeBoardToFile(gameBoardModel);
     }
     
     @FXML

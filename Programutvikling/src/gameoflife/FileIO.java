@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class FileIO {
  
     protected void writeBoardToFile(GameBoardModel gameBoardModel) throws IOException{
-        File outputFile = new File ("savegame/testfile1.dat");
+        File outputFile = new File ("savegame/savegame.dat");
         DataOutputStream os;
     
         os = new DataOutputStream(new FileOutputStream(outputFile));
@@ -61,7 +61,7 @@ public class FileIO {
     }
     
     protected void readFile() throws IOException{
-        File inputFile = new File ("savegame/testfile1.dat");
+        File inputFile = new File ("savegame/savegame.dat");
         DataInputStream os;
     
         os = new DataInputStream(new FileInputStream(inputFile));
@@ -81,8 +81,13 @@ public class FileIO {
         os.close();
     }
     
-        protected void readBoardFromFile(GameBoardModel gameBoardModel) throws IOException{
-        File inputFile = new File ("savegame/testfile1.dat");
+        /*should probably be deleted after multiple savegames in dropdown is implemented*/
+        protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel) throws IOException{
+            return readBoardFromFile(gameBoardModel, "savegame");
+        }
+    
+        protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
+        File inputFile = new File ("savegame/"+file+".dat");
         DataInputStream os;
     
         os = new DataInputStream(new FileInputStream(inputFile));
@@ -101,7 +106,7 @@ public class FileIO {
                 if (output>0){
                     isAlive = true;
                 }                
-                    int[] startValues = fillArray(cellIsAliveArray,startX, startY, fillNumber, isAlive, xmax, ymax);
+                    int[] startValues = fillArray(cellIsAliveArray,startX, startY, fillNumber, isAlive);
                     startX = startValues[0];
                     startY = startValues[1];
             }
@@ -110,16 +115,18 @@ public class FileIO {
             }
         }
         os.close();
+        return cellIsAliveArray;
     }
         
-    private int[] fillArray(boolean [][] cellIsAliveArray, int startX, int startY, byte fillNumber, boolean isAlive, int xmax, int ymax){
+    private int[] fillArray(boolean [][] cellIsAliveArray, int startX, int startY, byte fillNumber, boolean isAlive){
         int nextX = startX;
         int nextY = startY;
+        int ymax = cellIsAliveArray[0].length;
         int[] startValue;
         startValue = new int[2];
         for (int i = 0; i < fillNumber; i++){
-            cellIsAliveArray[nextX][nextY] = isAlive;
-            if(nextY+1>ymax){
+            cellIsAliveArray[nextX][nextY] = isAlive;            
+            if(nextY+1>=ymax){
                 nextX+=1;
                 nextY=0;
             }
