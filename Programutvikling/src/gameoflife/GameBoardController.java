@@ -65,24 +65,51 @@ public class GameBoardController implements Initializable{
      */
     
     @FXML
+    /**
+     * Class for the "X" value in the text-field.
+     * @see GameBoard.fxml
+     */
     private TextField X;
     @FXML
+    /**
+     * Class for the "Y" value in the text-field.
+     * @see GameBoard.fxml
+     */
     private TextField Y;
     @FXML
+    /**
+     * Class for the "Resize" button on the GUI.
+     * @see GameBoard.fxml
+     */
     protected Button resize;
     
-    
+    /**
+     * Integer value for counting each step.
+     */
     private int roundCounter;
-        
+    /**
+     * Default boolean value when the program starts.
+     */    
     protected boolean gameRunning = false;
-        
+    /**
+     * @see GameBoardCell.java
+     * @see GameBoardTile.java
+     */    
     private GameBoardTile cellViewArray[][];
     
-    /**/
+    /**
+     * Creating the object to display the "Game Board".
+     */
     GameBoardModel gameBoardModel = new GameBoardModel();
-    
+    /**
+     * Creating the "sound" object for playing sounds.
+     * @see Sound.java
+     */
     Sound sound = new Sound();
-    
+    /**
+     * Creating an object to import/export boards.
+     * @see FileIO.java
+     */
     FileIO fileIO = new FileIO();
             
     @Override
@@ -120,6 +147,10 @@ public class GameBoardController implements Initializable{
     }
                 
     @FXML
+    /**
+     * Class that sets up the game board & cells.
+     * @see GameBoardCell.java
+     */
     private void initBoard() {
         gameBoardModel.initCellStates();
         cellViewArray = new GameBoardTile[gameBoardModel.getXmax()][gameBoardModel.getYmax()];
@@ -130,13 +161,17 @@ public class GameBoardController implements Initializable{
                 String tileId = "cell_"+i+"_"+j;
                 int tileSize = 15;
                 GameBoardTile gameBoardTile = new GameBoardTile(tileId, tileSize);
-                cellViewArray[i][j] = gameBoardTile;
-                
-                /*Does not use the game board cell object for improved performance*/
+                cellViewArray[i][j] = gameBoardTile;          
+                /**
+                 * Does not use the "GameBoardCell" object for improved performance
+                 */
                 gameBoardTile.refreshTile(gameBoardModel.getCellIsAlive(i, j));
                 gameBoardTile.getTile().setOnAction(new EventHandler<ActionEvent>(){
                 
                     @Override
+                    /**
+                     * Method for refreshing the board.
+                     */
                     public void handle(ActionEvent event) {
                         writeCellClickToModel(tileId);
                         refreshBoard();
@@ -148,8 +183,13 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+     * Class that calls methods for starting and stopping the game.
+     */
     private void startStopGame(){
-        
+        /**
+         * Tells the program if the game is running or not by printing text.
+         */
         if(gameRunning == true){
             gameRunning = false;
             startButton.setText("Start");
@@ -161,16 +201,24 @@ public class GameBoardController implements Initializable{
                 
         new Thread(new Runnable() {
             @Override
+            /**
+             * Runs the board with steps.
+             */
             public void run() {
                 while (gameRunning == true) {
                     Platform.runLater(new Runnable() {
                     @Override
+                    /**
+                     * Method that repeatedly runs "step".
+                     */
                         public void run() {
                             step();                            
                         }
                         });
                         try {
-                            // Wait for 1 second.
+                            /**
+                             * Waits for 1 second.
+                             */
                             Thread.sleep(gameBoardModel.getCurrentTickTime());
                         }
                         catch (InterruptedException ex) {}
@@ -180,6 +228,10 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+     * Class for executing a step.
+     * Tells the counter to add one to the integer value for each step.
+     */
     private void step (){
         gameBoardModel.gameLogic();
         roundCounter++;
@@ -197,16 +249,27 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+    Method for clearing the board as well as the round counter.
+    */
     private void clearBoard(){
         roundCounter = 0;
         roundCounterLabel.setText(Integer.toString(roundCounter));
+        /**
+         * Tells the method to stop the game if its running.
+         */
         if (gameRunning == true){
             startStopGame();            
         }
+        /**
+         * Board is reset so all the tiles become "dead".
+         */
         gameBoardModel.initCellStates();
         rePaintBoard();        
     }
-        
+    /**
+     * Method for resetting the board to it's default state (When the program first runs).
+     */    
     private void rePaintBoard(){
         for (int i = 0; i<gameBoardModel.getXmax(); i++){
             for (int j = 0; j<gameBoardModel.getYmax(); j++){
@@ -225,7 +288,7 @@ public class GameBoardController implements Initializable{
     }
     
     /**
-     * Updates the view of the whole board from list
+     * Updates the view of the whole board from list.
      */
     private void refreshBoard(){
         GameBoardCell GameBoardCell = gameBoardModel.takeNextCellChange();
@@ -239,6 +302,10 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+     * Method that resizes the board based on integer values typed into TextField (X and Y).
+     * @see GameBoard.fxml
+     */
     private void setBoardSize(){
         String xString = X.getText();
         String yString = Y.getText();

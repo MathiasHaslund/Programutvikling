@@ -1,21 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gameoflife;
 
 import javafx.css.PseudoClass;
 import javafx.scene.control.Button;
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 0.9
+ * @since 0.9 (29/04/2017)
  */
 public class GameBoardTile {
    
    private static final PseudoClass LIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("live");
    
+   /**
+    * Class for creating a new tile object.
+    * Are "setID & setTileSize" default methods? 
+    */
    private Button tile;
    public GameBoardTile(String tileId, int tileSize){
        tile = new Button();
@@ -24,7 +25,7 @@ public class GameBoardTile {
     }
    
     /**
-     * refreshes the view of a single cell
+     * Refreshes the view of a single cell based on the condition of the cell.
      */
     protected void refreshTile(boolean cellState){
             if (cellState){
@@ -34,12 +35,18 @@ public class GameBoardTile {
                 tile.pseudoClassStateChanged(LIVE_PSEUDO_CLASS, false);  
             }
     }
-    
+    /**
+     * Allows the size-adjustment of the tiles (X and Y properties).
+     * @param size 
+     */
     private void setTileSize(int size){
         tile.setMinSize(size, size);
         tile.setMaxSize(size, size);
     }
-    
+    /**
+     * Method for the visual display of a tile.
+     * @return A viewable tile.
+     */
     protected Button getTile(){
         return tile;
     }
