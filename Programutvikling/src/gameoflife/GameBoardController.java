@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 
-/*newest file?*/
 package gameoflife;
 
 import java.io.File;
@@ -38,39 +37,47 @@ import javafx.scene.media.*;
 
 public class GameBoardController implements Initializable{
     
-    
+    /**
+    * @see gameBoard.fxml
+    * References the button with the text "Save" in the gameBoard.fxml
+    */
     @FXML
     private Button saveButton;
+    
+    /**
+    * @see gameBoard.fxml
+    * References the button with the text "Load" in the gameBoard.fxml
+    */
     @FXML
     private Button loadButton;
+    
     /**
     * @see gameBoard.fxml
     * References the button with the text "start/stop" in the gameBoard.fxml
     */
     @FXML 
     protected Button startButton;
+    
      /**
     * @see gameBoard.fxml
     * References the grid pane that contains the squares in the main board in gameBoard.fxml 
     */
     @FXML
     private GridPane gameGrid;
+    
     /**
      * @see gameBoard.fxml
      * References the slider inside the GUI
      */
     @FXML
     private Slider speedSlider;
+    
     /**
      * @see gameBoard.fxml
      * Counts the ticks of the game board (GUI).
      */
     @FXML
     protected Label roundCounterLabel;
-    /**
-     * @see step
-     * Counts each tick of the game board
-     */
     
     @FXML
     /**
@@ -78,12 +85,14 @@ public class GameBoardController implements Initializable{
      * @see GameBoard.fxml
      */
     private TextField X;
+    
     @FXML
     /**
      * Class for the "Y" value in the text-field.
      * @see GameBoard.fxml
      */
     private TextField Y;
+    
     @FXML
     /**
      * Class for the "Resize" button on the GUI.
@@ -92,7 +101,9 @@ public class GameBoardController implements Initializable{
     protected Button resize;
 
     /**
-    * 
+    * Class for the SaveChooser ChoiceBox in the GUI.
+    * Used for selecting what save file the load button will load to the board
+    * @see GameBoard.fxml
     */
     @FXML
     protected ChoiceBox saveChooser;
@@ -102,10 +113,12 @@ public class GameBoardController implements Initializable{
      * Integer value for counting each step.
      */
     private int roundCounter;
+    
     /**
      * Default boolean value when the program starts.
      */    
     protected boolean gameRunning = false;
+    
     /**
      * @see GameBoardCell.java
      * @see GameBoardTile.java
@@ -116,11 +129,19 @@ public class GameBoardController implements Initializable{
      * Creating the object to display the "Game Board".
      */
     GameBoardModel gameBoardModel = new GameBoardModel();
+    
     /**
-     * Creating the "sound" object for playing sounds.
-     * @see Sound.java
+     * Creating the object to control the game speed.
      */
-    Sound sound = new Sound();
+    GameSpeedControl gameSpeedControl = new GameSpeedControl();
+    
+
+    
+    /**
+     * 
+     */
+    Sound backgroundSound = new Sound(Sound.SoundTypes.BACKGROUND);
+    
     /**
      * Creating an object to import/export boards.
      * @see FileIO.java
@@ -136,34 +157,38 @@ public class GameBoardController implements Initializable{
      */
     public void initialize(URL location, ResourceBundle resources)
     {
-        sound.playSound(Sound.SoundTypes.BACKGROUND);
+        //sound.playSound(Sound.SoundTypes.BACKGROUND);
         initSlider ();
         initEmptyBoard();
+        initSaveChooser();
     }
       
 
-    
+    @FXML
+    private void initSaveChooser(){
+        saveChooser.setItems(FXCollections.observableArrayList("UserSave", "Gliders", "Boring", "Propeller","Flower"));
+        saveChooser.getSelectionModel().selectFirst();
+    }
     @FXML
     /**
      * Slider
      * @since 0.7
      * The functions of the slider based on the game speed.
-     * @see gameBoardModel.java (setGameSpeed)
+     * @see gameSpeedControl.java (setGameSpeed)
      */
     private void initSlider (){
-        gameBoardModel.setGameSpeed(speedSlider.valueProperty().doubleValue());        
+        gameSpeedControl.setGameSpeed(speedSlider.valueProperty().doubleValue());        
         speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov,
                 Number old_val, Number new_val) {
-                    System.out.println(new_val.doubleValue());
-                    gameBoardModel.setGameSpeed(new_val.doubleValue());                    
+                    gameSpeedControl.setGameSpeed(new_val.doubleValue());                    
             }
         });
     }
                 
     @FXML
     /**
-     * Class that sets up the game board & cells.
+     * Method that sets up the game board & cells.
      * @see GameBoardCell.java
      */
     private void initBoard() {
@@ -203,7 +228,7 @@ public class GameBoardController implements Initializable{
     
     @FXML
      /**
-     * Class that calls methods for starting and stopping the game.
+     * Method that calls methods for starting and stopping the game.
      */
     private void startStopGame(){
         
@@ -220,6 +245,8 @@ public class GameBoardController implements Initializable{
         if(gameRunning){
             return;
         }
+        (new Sound(Sound.SoundTypes.START)).playSound();
+        backgroundSound.playSound();
         gameRunning = true;
         startButton.setText("Stop");
                 
@@ -243,7 +270,7 @@ public class GameBoardController implements Initializable{
                             /**
                              * Waits for 1 second.
                              */
-                            Thread.sleep(gameBoardModel.getCurrentTickTime());
+                            Thread.sleep(gameSpeedControl.getTickTime());
                         }
                         catch (InterruptedException ex) {}
                 }
@@ -256,16 +283,18 @@ public class GameBoardController implements Initializable{
         if(!gameRunning){
             return;
         }
+        (new Sound(Sound.SoundTypes.STOP)).playSound();
+        backgroundSound.pauseSound();
         gameRunning = false;
         startButton.setText("Start");
     }
     
     @FXML
     /**
-     * Class for executing a step.
+     * Method for executing a step.
      * Tells the counter to add one to the integer value for each step.
      */
-    private void step (){
+    private void step (){        
         gameBoardModel.gameLogic();
         roundCounter++;
         roundCounterLabel.setText(Integer.toString(roundCounter));
@@ -280,12 +309,23 @@ public class GameBoardController implements Initializable{
         long stop = System.nanoTime();
         System.out.println("after view update: "+((stop-start)/1000000.0));
     }
+
+    @FXML
+     /**
+     * Method for executing the sound from the step button, and calling the step method
+     * @see GameBoard.fxml
+     */
+    private void singleStep(){
+        (new Sound(Sound.SoundTypes.CLICK)).playSound();
+        step();
+    }
     
     @FXML
     /**
     Method for clearing the board as well as the round counter.
     */
     private void clearBoard(){
+        (new Sound(Sound.SoundTypes.CLICK)).playSound();
         roundCounter = 0;
         roundCounterLabel.setText(Integer.toString(roundCounter));
         /**
@@ -340,6 +380,7 @@ public class GameBoardController implements Initializable{
      * @see GameBoard.fxml
      */
     private void setBoardSize(){
+        (new Sound(Sound.SoundTypes.CLICK)).playSound();
         String xString = X.getText();
         String yString = Y.getText();
         int xInt = Integer.parseInt(xString);
@@ -356,15 +397,17 @@ public class GameBoardController implements Initializable{
     @FXML
     private void loadGameFromFile() throws IOException{
         FileIO fileIO = new FileIO();
-        boolean[][] cellIsAliveArray = fileIO.readBoardFromFile(gameBoardModel);
-        int xmax = cellIsAliveArray.length;
-        int ymax = cellIsAliveArray[0].length;
+        String savename = saveChooser.getValue().toString();
+        boolean[][] cellIsAliveArrayFromFile = fileIO.readBoardFromFile(gameBoardModel, savename);
+        int xmax = cellIsAliveArrayFromFile.length;
+        int ymax = cellIsAliveArrayFromFile[0].length;
         stopGame();
+        (new Sound(Sound.SoundTypes.CLICK)).playSound();
         roundCounter = 0;
         roundCounterLabel.setText(Integer.toString(roundCounter));
         gameBoardModel.setXmax(xmax);
         gameBoardModel.setYmax(ymax);
-        gameBoardModel.initCellStatesFromArray(cellIsAliveArray);
+        gameBoardModel.initCellStatesFromArray(cellIsAliveArrayFromFile);
         gameGrid.getChildren().get(0);
         gameGrid.getChildren().clear();
         initBoard();
@@ -373,27 +416,10 @@ public class GameBoardController implements Initializable{
     @FXML
     private void saveGameToFile() throws IOException{
         stopGame();
+        (new Sound(Sound.SoundTypes.CLICK)).playSound();
         FileIO fileIO = new FileIO();
         fileIO.writeBoardToFile(gameBoardModel);
     }
+}
     
-    @FXML
-    private void debug(){
-        //try {
-           // fileIO.writeBoardToFile(gameBoardModel);
-          //  fileIO.readFile();
-            //fileIO.readTestFile();
-            /*
-            long start = System.nanoTime();
-            step();
-            step();
-            step();
-            long stop = System.nanoTime();
-            System.out.println("after 3 steps: "+((stop-start)/1000000.0));
-            */
-        //} catch (IOException ex) {
-          //  Logger.getLogger(GameBoardController.class.getName()).log(Level.SEVERE, null, ex);
-        //}
-    }
-}    
 

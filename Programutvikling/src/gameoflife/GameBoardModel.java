@@ -15,25 +15,11 @@ import java.util.concurrent.TimeUnit;
  * The "Model" file that displays all the GUI elements.
  */
 public class GameBoardModel { 
-    /**
-     * Tick time in miliseconds.
-     */
-    private int minTickTime = 100;
-    private int maxTickTime = 1000;
-    private int currentTickTime;
-      /**
-     * Function for setting the speed with the slider.
-     * @see initSlider
-     * @param gameSpeed 
-     */
-    protected void setGameSpeed(double gameSpeed){
-        currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
-    }
     
     private ArrayList<GameBoardCell> cellChangeList = new ArrayList<GameBoardCell>();
     private boolean cellIsAliveArray[][];
-    private int xmax = 10;
-    private int ymax = 15;
+    private int xmax = 50;
+    private int ymax = 30;
     
     protected int getXmax(){
         return xmax;
@@ -50,17 +36,11 @@ public class GameBoardModel {
         this.ymax = ymax;
     }
     
-    
     /**
-     * Returns the tick time in miliseconds.
-     */
-    protected int getCurrentTickTime(){
-        return currentTickTime;
-    }
-    /**
-     * Checks for the cell states adjacent to the current cell. 
+     * Checks for the cell states adjacent to the current cell.
      */
     protected void initCellStates (){
+        /*Relies on the fact that boolean arrays are initialized with false as the default value*/
         this.cellIsAliveArray = new boolean[xmax][ymax];
     }
     /**

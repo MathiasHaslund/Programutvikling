@@ -16,9 +16,12 @@
         <VBox>
         <HBox>
             <Button text="Save" fx:id="saveButton" minWidth="50" onAction="#saveGameToFile"/>
-            <Button text="Load" fx:id="loadButton" minWidth="50" onAction="#loadGameFromFile"/>
+        </HBox>
+        <HBox>
             <ChoiceBox fx:id="saveChooser">
             </ChoiceBox>
+            <Button text="Load" fx:id="loadButton" minWidth="50" onAction="#loadGameFromFile"/>
+            
         </HBox>
         <GridPane alignment="center" hgap="0" vgap="0" fx:id="gameGrid">
             <padding>
@@ -30,7 +33,7 @@
             <Label text="Select speed" fx:id="textForSlider"/>
         </HBox>
         <HBox fx:id="secondHbox">            
-            <Button text="Step" fx:id="stepButton" minWidth="50" onAction="#step"/>
+            <Button text="Step" fx:id="stepButton" minWidth="50" onAction="#singleStep"/>
             <Slider fx:id="speedSlider" max="1" value="0.5"/> 
             <Label text="Number of steps: "  />
             <Label fx:id="roundCounterLabel" text="0"/>

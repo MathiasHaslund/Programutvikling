@@ -11,14 +11,13 @@ package gameoflife;
  * Class for setting the maximum, minimum and current tick time.
  */
 public class GameSpeedControl {
-    /*tick time in miliseconds*/
+    /**
+     * Tick time in milliseconds.
+     */
     private int minTickTime = 100;
     private int maxTickTime = 1000;
     private int currentTickTime;
     
-    public GameSpeedControl(int min, int max){
-                
-    }
 /**
  * Method for the calculation of the current tick time (adjusted with slider).
  * @see GameBoard.fxml
@@ -27,6 +26,15 @@ public class GameSpeedControl {
  */
     protected void setGameSpeed(double gameSpeed){
         currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
+    }
+
+/**
+ * Method for getting the current speed the game runs at.
+ * @see step()
+ * @return currentTickTime (in milliseconds), which controls the delay betweens steps.
+ */    
+    protected int getTickTime(){
+        return currentTickTime;
     }
     
 }

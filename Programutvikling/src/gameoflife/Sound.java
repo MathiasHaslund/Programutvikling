@@ -21,32 +21,31 @@ public class Sound {
  * Controller method for playing sounds on "Background","Play" and "Step" buttons.
  */
     public enum SoundTypes {
-        BACKGROUND, PLAY, STEP;
+        BACKGROUND, START, STOP, CLICK;
     }
-    Map<String, String> soundList = new HashMap();
-/**
- * Class for "Background" sound-type.
- */    
-    public Sound(){
-        soundList.put(SoundTypes.BACKGROUND.toString(), "sneaky.mp3");
-    }    
-/**
- * Class for the playing sounds.
- */
-    MediaPlayer mediaPlayer;
-/**
- * Method for playing a specific sound file.
- * @param soundName 
- */
-    protected void playSound(SoundTypes soundName){
-        
+    private Map<String, String> soundList = new HashMap();
+    
+    private MediaPlayer player;
+
+    public Sound(SoundTypes soundName){
+        soundList.put(SoundTypes.BACKGROUND.toString(), "sound/sneaky.wav");
+        soundList.put(SoundTypes.START.toString(), "sound/start.wav");
+        soundList.put(SoundTypes.STOP.toString(), "sound/stop.wav");
+        soundList.put(SoundTypes.CLICK.toString(), "sound/click.wav");
         String soundString = soundList.get(soundName.toString());
-        Media sound = new Media(new File(soundString).toURI().toString());
-/**
- * Initializing a mediaPlayer object for playing sound files.
- * @see GameBoardController.java (Initialize).
- */
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+        Media currentSound = new Media(new File(soundString).toURI().toString());
+        player = new MediaPlayer(currentSound);
+    }    
+
+    protected void playSound(){
+        player.play();
+    }
+    
+    protected void pauseSound(){
+        player.pause();
+    }
+    
+    protected void stopSound(){
+        player.stop();
     }
 }

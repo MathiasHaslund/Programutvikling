@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 public class FileIO {
  
     protected void writeBoardToFile(GameBoardModel gameBoardModel) throws IOException{
-        File outputFile = new File ("savegame/savegame.dat");
+        File outputFile = new File ("savegame/UserSave.dat");
         DataOutputStream os;
     
         os = new DataOutputStream(new FileOutputStream(outputFile));
@@ -57,36 +57,10 @@ public class FileIO {
         os.close();
     }
     
-    protected void readFile() throws IOException{
-        File inputFile = new File ("savegame/savegame.dat");
-        DataInputStream os;
-    
-        os = new DataInputStream(new FileInputStream(inputFile));
-        int xmax = os.readInt();
-        int ymax = os.readInt();
-        System.out.println(xmax);
-        System.out.println(ymax);
-        while(true){
-            try{
-                byte output = os.readByte();
-                System.out.println(output);
-            }
-            catch (EOFException e){
-                break;
-            }
-        }
-        os.close();
-    }
-    
-        /*should probably be deleted after multiple savegames in dropdown is implemented*/
-        protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel) throws IOException{
-            return readBoardFromFile(gameBoardModel, "savegame");
-        }
-    
-        protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
+    protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
         File inputFile = new File ("savegame/"+file+".dat");
         DataInputStream os;
-    
+
         os = new DataInputStream(new FileInputStream(inputFile));
         int xmax = os.readInt();
         int ymax = os.readInt();
