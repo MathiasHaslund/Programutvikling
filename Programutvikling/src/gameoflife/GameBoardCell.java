@@ -13,9 +13,9 @@ package gameoflife;
  */
 
 public class GameBoardCell {
-    private int x;
-    private int y;
-    boolean[][] cellIsAliveArray;
+    private final int x;
+    private final int y;
+    private final boolean[][] cellIsAliveArray;
     
     public GameBoardCell(int x, int y, boolean[][] cellIsAliveArray){
         this.x=x;

@@ -6,22 +6,17 @@
 
 package gameoflife;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.value.*;
 import javafx.collections.FXCollections;
-import javafx.css.PseudoClass;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
-import static javafx.scene.input.KeyCode.X;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
-import javafx.scene.media.*;
 
 
 /**
@@ -84,14 +79,14 @@ public class GameBoardController implements Initializable{
      * Class for the "X" value in the text-field.
      * @see GameBoard.fxml
      */
-    private TextField X;
+    private TextField inputX;
     
     @FXML
     /**
      * Class for the "Y" value in the text-field.
      * @see GameBoard.fxml
      */
-    private TextField Y;
+    private TextField inputY;
     
     @FXML
     /**
@@ -298,7 +293,6 @@ public class GameBoardController implements Initializable{
         gameBoardModel.gameLogic();
         roundCounter++;
         roundCounterLabel.setText(Integer.toString(roundCounter));
-        long start = System.nanoTime();
         while(true) {           
             GameBoardCell GameBoardCell = gameBoardModel.takeNextCellChange();
             if (GameBoardCell == null){
@@ -306,8 +300,6 @@ public class GameBoardController implements Initializable{
             }
             refreshButtonAtCoordinates(GameBoardCell);            
         }
-        long stop = System.nanoTime();
-        System.out.println("after view update: "+((stop-start)/1000000.0));
     }
 
     @FXML
@@ -381,45 +373,57 @@ public class GameBoardController implements Initializable{
      */
     private void setBoardSize(){
         (new Sound(Sound.SoundTypes.CLICK)).playSound();
-        String xString = X.getText();
-        String yString = Y.getText();
-        int xInt = Integer.parseInt(xString);
-        int yInt = Integer.parseInt(yString);
-        //int x = Integer.parseInt(xString);
-        //System.out.println(xInt);
-        gameBoardModel.setXmax(xInt);
-        gameBoardModel.setYmax(yInt);
+        gameBoardModel.setXmax(Integer.parseInt(inputX.getText()));
+        gameBoardModel.setYmax(Integer.parseInt(inputY.getText()));
         gameGrid.getChildren().get(0);
         gameGrid.getChildren().clear();
         initEmptyBoard();
     }
-    
+    /*the exception handling might not be necessary as the user should not manipulate the savegame folder*/
     @FXML
-    private void loadGameFromFile() throws IOException{
-        FileIO fileIO = new FileIO();
-        String savename = saveChooser.getValue().toString();
-        boolean[][] cellIsAliveArrayFromFile = fileIO.readBoardFromFile(gameBoardModel, savename);
-        int xmax = cellIsAliveArrayFromFile.length;
-        int ymax = cellIsAliveArrayFromFile[0].length;
+    private void loadGameFromFile(){
         stopGame();
-        (new Sound(Sound.SoundTypes.CLICK)).playSound();
-        roundCounter = 0;
-        roundCounterLabel.setText(Integer.toString(roundCounter));
-        gameBoardModel.setXmax(xmax);
-        gameBoardModel.setYmax(ymax);
-        gameBoardModel.initCellStatesFromArray(cellIsAliveArrayFromFile);
-        gameGrid.getChildren().get(0);
-        gameGrid.getChildren().clear();
-        initBoard();
+        FileIO fileIO = new FileIO();
+        String savename = saveChooser.getValue().toString()+".dat";
+        try{
+            boolean[][] cellIsAliveArrayFromFile = fileIO.readBoardFromFile(gameBoardModel, savename);
+            int xmax = cellIsAliveArrayFromFile.length;
+            int ymax = cellIsAliveArrayFromFile[0].length;
+            (new Sound(Sound.SoundTypes.CLICK)).playSound();
+            roundCounter = 0;
+            roundCounterLabel.setText(Integer.toString(roundCounter));
+            gameBoardModel.setXmax(xmax);
+            gameBoardModel.setYmax(ymax);
+            gameBoardModel.initCellStatesFromArray(cellIsAliveArrayFromFile);
+            gameGrid.getChildren().get(0);
+            gameGrid.getChildren().clear();
+            initBoard();
+        }
+        catch(IOException ex){
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Missing file");
+            alert.setHeaderText("The file you tried to load could not be found");
+            alert.setContentText("could not find the file "+savename+" in the savegame folder");
+            alert.showAndWait();
+
+        }
     }
     
+    /*the exception handling should only trigger if the user chooses to rename or delete the savegame folder*/
     @FXML
-    private void saveGameToFile() throws IOException{
-        stopGame();
-        (new Sound(Sound.SoundTypes.CLICK)).playSound();
-        FileIO fileIO = new FileIO();
-        fileIO.writeBoardToFile(gameBoardModel);
+    private void saveGameToFile(){
+        try{
+            stopGame();
+            (new Sound(Sound.SoundTypes.CLICK)).playSound();
+            FileIO fileIO = new FileIO();
+            fileIO.writeBoardToFile(gameBoardModel);
+        }
+        catch(IOException ex){
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Unable to save file");
+            alert.setHeaderText("The file you tried to save could not be saved");
+            alert.setContentText("could not write the file UserSave.dat to the savegame folder");
+            alert.showAndWait();
+        }
     }
 }
-    
-

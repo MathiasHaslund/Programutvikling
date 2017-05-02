@@ -40,10 +40,10 @@
 #fourthHBox{
     -fx-spacing: 5;
 }
-#X{
+#inputX{
     -fx-padding: 0px;
 }
-#Y{
+#inputY{
     -fx-padding: 0; 
 }
 #speedSlider{

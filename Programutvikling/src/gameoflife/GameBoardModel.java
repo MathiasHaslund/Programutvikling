@@ -1,7 +1,6 @@
 package gameoflife;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -136,7 +135,6 @@ public class GameBoardModel {
      * Repeats the calculations for every cell on the game board.
      */
     protected void gameLogic(){
-        long start = System.nanoTime();
         for (int i = 0; i<xmax; i++){
             for (int j = 0; j<ymax; j++){
 		int counter = countLiveNeighbours(i, j);
@@ -152,15 +150,11 @@ public class GameBoardModel {
 		}					
             }
         }
-        long afterCount = System.nanoTime();
         for (int i = 0; i<cellChangeList.size(); i++){
             GameBoardCell gameBoardCell = cellChangeList.get(i);
             int x = gameBoardCell.getX();
             int y = gameBoardCell.getY();
             cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         }
-        long afterCellChangeList = System.nanoTime();
-        System.out.println("after count: "+((afterCount-start)/1000000.0));
-        System.out.println("after cell change list: "+((afterCellChangeList-start)/1000000.0));
     }
 }

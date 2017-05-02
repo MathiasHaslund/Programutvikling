@@ -40,8 +40,8 @@
         </HBox>
         <HBox fx:id="thirdHBox">
             <Button text="Resize" fx:id="resize" minWidth="50" onAction="#setBoardSize"/>
-            <TextField fx:id="X" maxWidth="30" maxHeight="30"/>  
-            <TextField fx:id="Y" maxWidth="30" maxHeight="30"/>  
+            <TextField fx:id="inputX" maxWidth="30" maxHeight="30"/>  
+            <TextField fx:id="inputY" maxWidth="30" maxHeight="30"/>  
         </HBox>
         <HBox fx:id="fourthHBox">
             <Button text="Clear" fx:id="clearButton" minWidth="50" onAction="#clearBoard"/>
