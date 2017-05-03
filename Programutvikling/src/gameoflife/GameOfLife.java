@@ -23,6 +23,9 @@ import javafx.stage.Stage;
 public class GameOfLife extends Application {
     
     @Override
+    /**
+     * The main method that runs the whole scene (Game board and the gui).
+     */
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("GameBoard.fxml"));
         

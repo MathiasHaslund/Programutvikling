@@ -9,15 +9,24 @@ import javafx.scene.control.Button;
  * @version 0.9
  * @since 0.9 (29/04/2017)
  */
+ /**
+ * PseudoClass is used for the Pseudo properties of the buttons.
+ * PseudoClass has different properties compared to the standard class. 
+ */
 public class GameBoardTile {
    
    private static final PseudoClass LIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("live");
    
    /**
     * Class for creating a new tile object.
-    * Are "setID & setTileSize" default methods? 
     */
    private Button tile;
+   /**
+    * Class for the pseudo buttons associated with the Class.
+    * @see GameBoardTile
+    * @param tileId
+    * @param tileSize 
+    */
    public GameBoardTile(String tileId, int tileSize){
        tile = new Button();
        tile.setId(tileId);

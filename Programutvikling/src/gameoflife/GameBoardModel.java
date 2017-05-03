@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * The "Model" file that displays all the GUI elements.
+ * The game board is created using X and Y dimensions.
  */
 public class GameBoardModel { 
     
@@ -39,11 +40,13 @@ public class GameBoardModel {
      * Checks for the cell states adjacent to the current cell.
      */
     protected void initCellStates (){
-        /*Relies on the fact that boolean arrays are initialized with false as the default value*/
+        /**
+         * Relies on the fact that boolean arrays are initialized with false as the default value
+         */
         this.cellIsAliveArray = new boolean[xmax][ymax];
     }
     /**
-     * 
+     * Initializes the cell states from the current array.
      * @param cellIsAliveArray 
      */
     protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 
 package gameoflife;
 
@@ -27,14 +23,19 @@ import javafx.scene.layout.GridPane;
 */
 
 /**
- * The functions and inner workings of the GUI
+ * The functions and inner workings of the GUI.
+ * The center for most of the functions of the Java program such as the sounds, slider, button controlling and the board itself.
+ * For more detailed explanations and code: 
+ * @see Sound.java
+ * @see GameSpeedControl.java
+ * @see GameBoardModel.java
  */
 
 public class GameBoardController implements Initializable{
     
     /**
     * @see gameBoard.fxml
-    * References the button with the text "Save" in the gameBoard.fxml
+    * References the button with the text "start/stop" in the gameBoard.fxml
     */
     @FXML
     private Button saveButton;
@@ -62,7 +63,7 @@ public class GameBoardController implements Initializable{
     
     /**
      * @see gameBoard.fxml
-     * References the slider inside the GUI
+     * References the slider inside the GUI.
      */
     @FXML
     private Slider speedSlider;
@@ -97,7 +98,7 @@ public class GameBoardController implements Initializable{
 
     /**
     * Class for the SaveChooser ChoiceBox in the GUI.
-    * Used for selecting what save file the load button will load to the board
+    * Used for selecting what save file the load button will load to the board.
     * @see GameBoard.fxml
     */
     @FXML
@@ -133,12 +134,13 @@ public class GameBoardController implements Initializable{
 
     
     /**
-     * 
+     * Creating the new object that will play the sound file associated with the enum element "BACKGROUND".
+     * @see Sound.java
      */
     Sound backgroundSound = new Sound(Sound.SoundTypes.BACKGROUND);
     
     /**
-     * Creating an object to import/export boards.
+     * Creating an object to import/export boards and the cell states in the boards.
      * @see FileIO.java
      */
     FileIO fileIO = new FileIO();
@@ -146,7 +148,8 @@ public class GameBoardController implements Initializable{
     @Override
     /**
      * @since 0.6
-     * Initialization for Background Music and Slider function.
+     * Initialization method for Background Music, Board and Slider functions.
+     * Calls the slider and board initializers.
      * @see playSound
      * @see initSlider
      */
@@ -160,16 +163,21 @@ public class GameBoardController implements Initializable{
       
 
     @FXML
+    /**
+     * Method that allows the user to select any preset or saved game boards and cell states.
+     */
     private void initSaveChooser(){
         saveChooser.setItems(FXCollections.observableArrayList("UserSave", "Gliders", "Boring", "Propeller","Flower"));
         saveChooser.getSelectionModel().selectFirst();
     }
     @FXML
-    /**
+     /**
      * Slider
-     * @since 0.7
+     * @since 0.7 
+     * The method that initiates the slider function.
      * The functions of the slider based on the game speed.
-     * @see gameSpeedControl.java (setGameSpeed)
+     * @see gameBoardModel.java (setGameSpeed)
+     * @see GameSpeedControl.java
      */
     private void initSlider (){
         gameSpeedControl.setGameSpeed(speedSlider.valueProperty().doubleValue());        
@@ -184,6 +192,7 @@ public class GameBoardController implements Initializable{
     @FXML
     /**
      * Method that sets up the game board & cells.
+     * The main initializer that creates a board based on the properties set in the code.
      * @see GameBoardCell.java
      */
     private void initBoard() {
@@ -215,7 +224,12 @@ public class GameBoardController implements Initializable{
             }
         }
     }
-    
+    /**
+     * Method that initializes an "empty" board.
+     * An empty board contains exclusively dead cells.
+     * The board starts the same way as like in 'initBoard'
+     * @see initBoard
+     */
     private void initEmptyBoard(){
         gameBoardModel.initCellStates();
         initBoard();
@@ -223,7 +237,9 @@ public class GameBoardController implements Initializable{
     
     @FXML
      /**
-     * Method that calls methods for starting and stopping the game.
+     * Method that controls if the game is running or not.
+     * If the game is running the stopGame method will execute.
+     * If the game isnt running, the startGame method will execute.
      */
     private void startStopGame(){
         
@@ -236,10 +252,18 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+     * Method that controls the actions when the game is commenced with the 'Start' button.
+     * @see GameBoard.fxml
+     */
     private void startGame(){
         if(gameRunning){
             return;
         }
+        /**
+         * Music plays when the button is pressed.
+         * @see Sound.java
+         */
         (new Sound(Sound.SoundTypes.START)).playSound();
         backgroundSound.playSound();
         gameRunning = true;
@@ -274,10 +298,17 @@ public class GameBoardController implements Initializable{
     }
     
     @FXML
+    /**
+     * The method that is executed when the game is commanded to stop running.
+     */
     private void stopGame(){
         if(!gameRunning){
             return;
         }
+        /**
+         * A different sound effect is played when the game is stopped.
+         * @see Sound.java
+         */
         (new Sound(Sound.SoundTypes.STOP)).playSound();
         backgroundSound.pauseSound();
         gameRunning = false;
@@ -304,7 +335,7 @@ public class GameBoardController implements Initializable{
 
     @FXML
      /**
-     * Method for executing the sound from the step button, and calling the step method
+     * Method for executing the sound from the step button, and calling the step method.
      * @see GameBoard.fxml
      */
     private void singleStep(){
@@ -314,7 +345,10 @@ public class GameBoardController implements Initializable{
     
     @FXML
     /**
-    Method for clearing the board as well as the round counter.
+    * Method for clearing the board as well as the round counter.
+    * The CLICK sound is played when the associated button is pressed
+    * @see GameBoard.fxml
+    * @see Sound.java
     */
     private void clearBoard(){
         (new Sound(Sound.SoundTypes.CLICK)).playSound();
@@ -343,7 +377,10 @@ public class GameBoardController implements Initializable{
             }
         }
     }
-    
+    /**
+     * Class... 
+     * @param buttonId 
+     */
     private void writeCellClickToModel(String buttonId){
         int p1 = buttonId.indexOf("_",0);
         int p2 = buttonId.indexOf("_",p1+1);
@@ -353,14 +390,18 @@ public class GameBoardController implements Initializable{
     }
     
     /**
-     * Updates the view of the whole board from list.
+     * Method that updates the view of the whole board from list.
      */
     private void refreshBoard(){
         GameBoardCell GameBoardCell = gameBoardModel.takeNextCellChange();
         refreshButtonAtCoordinates(GameBoardCell);
     }    
 
-    /**/
+    /**
+     * Method that gets the X and Y coordinates from the game board.
+     * Refreshes a certain button based on its status (checks if its alive).
+     * @see GameBoardModel.java
+     */
     protected void refreshButtonAtCoordinates(GameBoardCell gameBoardCell){        
         GameBoardTile gameBoardTile = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
         gameBoardTile.refreshTile(gameBoardCell.isAlive());
@@ -379,7 +420,12 @@ public class GameBoardController implements Initializable{
         gameGrid.getChildren().clear();
         initEmptyBoard();
     }
-    /*the exception handling might not be necessary as the user should not manipulate the savegame folder*/
+    /**
+     * Loading a saved .dat file.
+     * The exception handling might not be necessary as the user should not manipulate the savegame folder.
+     * @see FileIO.java
+     * @see stopGame
+     */
     @FXML
     private void loadGameFromFile(){
         stopGame();
@@ -399,6 +445,9 @@ public class GameBoardController implements Initializable{
             gameGrid.getChildren().clear();
             initBoard();
         }
+        /**
+         * An alert that triggers if a certain file being loaded doesnt exist or cant be found.
+         */
         catch(IOException ex){
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Missing file");
@@ -409,7 +458,11 @@ public class GameBoardController implements Initializable{
         }
     }
     
-    /*the exception handling should only trigger if the user chooses to rename or delete the savegame folder*/
+    /**
+     * Saving the current board as a .dat file.
+     * the exception handling should only trigger if the user chooses to rename or delete the savegame folder.
+     * @see stopGame
+     */
     @FXML
     private void saveGameToFile(){
         try{
@@ -418,6 +471,9 @@ public class GameBoardController implements Initializable{
             FileIO fileIO = new FileIO();
             fileIO.writeBoardToFile(gameBoardModel);
         }
+        /**
+         * Alerts and text incase something goes wrong when saving the file.
+         */
         catch(IOException ex){
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Unable to save file");
