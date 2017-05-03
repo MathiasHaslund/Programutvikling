@@ -47,7 +47,7 @@ public class GameBoardModel {
     }
     /**
      * Initializes the cell states from the current array.
-     * @param cellIsAliveArray 
+     * @param cellIsAliveArray todo
      */
     protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){
         this.cellIsAliveArray = new boolean[xmax][ymax];
@@ -59,16 +59,16 @@ public class GameBoardModel {
     }
     /**
      * Changes the state of the cell.
-     * @param x
-     * @param y 
+     * @param x todo
+     * @param y todo
      */
     protected void toggleCellState (int x, int y){
         cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         addToCellChangeList(x, y);
     }
      /**
-     * @param x
-     * @param y
+     * @param x todo
+     * @param y todo
      * @return The cell to an alive or dead state. 
      */
     protected boolean getCellIsAlive(int x, int y){
@@ -76,8 +76,8 @@ public class GameBoardModel {
     }
      /**
      * Adds/Checks a new cell and its state.
-     * @param x
-     * @param y 
+     * @param x todo
+     * @param y  todo
      */
     protected void addToCellChangeList (int x, int y){        
         cellChangeList.add(new GameBoardCell(x, y, cellIsAliveArray));
@@ -95,8 +95,8 @@ public class GameBoardModel {
         return gameBoardCell;
     }
       /**
-     * @param x
-     * @param y
+     * @param x todo
+     * @param y todo
      * @return True if cell is inside the game board, false if not.
      */
     private boolean isOutsideBoard(int x, int y){
@@ -109,8 +109,8 @@ public class GameBoardModel {
     }
     /**
      * Checks if current cell is a cell on the board.
-     * @param x
-     * @param y
+     * @param x todo
+     * @param y todo
      * @return A value based on the number of living cells around one specific cell.
      */
     private int countLiveNeighbours(int x, int y){

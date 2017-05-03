@@ -10,8 +10,7 @@ package gameoflife;
 /**
  * Constructor for setting the maximum, minimum and current tick time.
  * The slider in the GUI is directly tied to the values in this constructor.
- * @see GameBoard.fxml to see the slider and its parameters.
- * @see GameBoardController.java
+ * @see GameBoardController
  * Tick time is in milliseconds.
  */
 public class GameSpeedControl {
@@ -32,9 +31,8 @@ public class GameSpeedControl {
     
 /**
  * Class for the calculation of the current tick time (adjusted with slider).
- * @see GameBoard.fxml
  * @see GameBoardController (initSlider)
- * @param gameSpeed 
+ * @param gameSpeed  todo
  */
     protected void setGameSpeed(double gameSpeed){
         /**
@@ -46,7 +44,7 @@ public class GameSpeedControl {
 
 /**
  * Method for getting the current speed the game runs at.
- * @see GameBoardController.java (step)
+ * @see GameBoardController (step)
  * @return currentTickTime (in milliseconds), which controls the delay between steps.
  */    
     protected int getTickTime(){

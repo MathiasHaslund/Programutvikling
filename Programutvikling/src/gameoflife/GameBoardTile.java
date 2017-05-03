@@ -24,8 +24,8 @@ public class GameBoardTile {
    /**
     * Class for the pseudo buttons associated with the Class.
     * @see GameBoardTile
-    * @param tileId
-    * @param tileSize 
+    * @param tileId todo
+    * @param tileSize  todo
     */
    public GameBoardTile(String tileId, int tileSize){
        tile = new Button();
@@ -35,6 +35,7 @@ public class GameBoardTile {
    
     /**
      * Refreshes the view of a single cell based on the condition of the cell.
+     * @param cellState todo
      */
     protected void refreshTile(boolean cellState){
             if (cellState){
@@ -46,7 +47,7 @@ public class GameBoardTile {
     }
     /**
      * Allows the size-adjustment of the tiles (X and Y properties).
-     * @param size 
+     * @param size todo
      */
     private void setTileSize(int size){
         tile.setMinSize(size, size);

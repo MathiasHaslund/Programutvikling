@@ -21,8 +21,8 @@ public class FileIO {
     /**
      * Method that allows game boards to written and saved as .dat files.
      * .dat files contain the information for the stored game board configuration.
-     * @param gameBoardModel
-     * @throws IOException 
+     * @param gameBoardModel todo
+     * @throws IOException todo
      */
     protected void writeBoardToFile(GameBoardModel gameBoardModel) throws IOException{
         File outputFile = new File ("savegame/UserSave.dat");
@@ -73,9 +73,11 @@ public class FileIO {
     }
     /**
     * This reads the game board from the saved .dat file.
-    * @see GameBoardModel.java
-    * @param gameBoardModel
-    * @throws IOException 
+    * @see GameBoardModel
+    * @param gameBoardModel todo
+    * @param file todo
+    * @throws IOException todo
+    * @return cellIsAliveArray todo
     */
     protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
         File inputFile = new File ("savegame/"+file);
