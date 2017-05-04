@@ -23,76 +23,72 @@ import javafx.scene.layout.GridPane;
 */
 
 /**
- * The functions and inner workings of the GUI.
- * The center for most of the functions of the Java program such as the sounds, slider, button controlling and the board itself.
- * For more detailed explanations and code: 
- * @see Sound
- * @see GameSpeedControl
- * @see GameBoardModel
+ * The GameBoardController sends commands to update the data in the model (GameBoardmodel.java) and to update objects in view (GameBoard.fxml)
+ * It accepts actions through user input from the interactive objects in the view, and uses the user interaction to update and change data and states in the model.
+ * When the data and states in the model changes, the GameBoardController updates the view to reflect the changes.
  */
 
 public class GameBoardController implements Initializable{
     
     /**
-    * References the button with the text "start/stop" in the gameBoard
+    * References the button with the text "start/stop" in the gameBoard.
     */
     @FXML
     private Button saveButton;
     
     /**
-    * References the button with the text "Load" in the gameBoard
+    * References the button with the text "Load" in the gameBoard.
     */
     @FXML
     private Button loadButton;
     
     /**
-    * References the button with the text "start/stop" in the gameBoard
+    * References the button with the text "start/stop" in the gameBoard.
     */
     @FXML 
-    protected Button startButton;
+    private Button startButton;
     
      /**
-    * References the grid pane that contains the squares in the main board in gameBoard
+    * References the grid pane that contains the squares in the main board.
     */
     @FXML
     private GridPane gameGrid;
     
     /**
-     * References the slider inside the GUI.
+     * References the slider used to change the game speed.
      */
     @FXML
     private Slider speedSlider;
     
     /**
-     * Counts the ticks of the game board (GUI).
+     * Counts the ticks of the game board.
      */
     @FXML
-    protected Label roundCounterLabel;
+    private Label roundCounterLabel;
     
     @FXML
     /**
-     * Class for the "X" value in the text-field.
+     * References the TextField for setting the length og the x-axis.
      */
     private TextField inputX;
     
     @FXML
     /**
-     * Class for the "Y" value in the text-field.
+     * References the TextField for setting the length og the y-axis.
      */
     private TextField inputY;
     
     @FXML
     /**
-     * Class for the "Resize" button on the GUI.
+     * References the Resize button used to set custom board sizes set by inputX and inputY.
      */
-    protected Button resize;
+    private Button resize;
 
     /**
-    * Class for the SaveChooser ChoiceBox in the GUI.
-    * Used for selecting what save file the load button will load to the board.
+    * References the CoiceBox used for selecting saved games to load.
     */
     @FXML
-    protected ChoiceBox saveChooser;
+    private ChoiceBox saveChooser;
     
 
      /**
@@ -101,51 +97,43 @@ public class GameBoardController implements Initializable{
     private int roundCounter;
     
     /**
-     * Default boolean value when the program starts.
+     * Flag for determining wether the game is running or not.
      */    
     protected boolean gameRunning = false;
     
     /**
-     * @see GameBoardCell
-     * @see GameBoardTile
+     * Array for containing the visual tiles that build the game board.
      */    
     private GameBoardTile cellViewArray[][];
     
     /**
-     * Creating the object to display the "Game Board".
+     * Creating an instance of the GameBoardModel.
      */
-    GameBoardModel gameBoardModel = new GameBoardModel();
+    private GameBoardModel gameBoardModel = new GameBoardModel();
     
     /**
-     * Creating the object to control the game speed.
+     * Creating an instance of the GameSpeedControl.
      */
-    GameSpeedControl gameSpeedControl = new GameSpeedControl();
+    private GameSpeedControl gameSpeedControl = new GameSpeedControl();
     
 
     
     /**
-     * Creating the new object that will play the sound file associated with the enum element "BACKGROUND".
-     * @see Sound
+     * Creating an instance of the Sound object that will play and pause the audio file associated with the enum element "BACKGROUND".
      */
     Sound backgroundSound = new Sound(Sound.SoundTypes.BACKGROUND);
     
     /**
-     * Creating an object to import/export boards and the cell states in the boards.
-     * @see FileIO
+     * Creating an instance of the object to import/export boards and the cell states in the boards.
      */
     FileIO fileIO = new FileIO();
             
-    @Override
     /**
-     * @since 0.6
-     * Initialization method for Background Music, Board and Slider functions.
-     * Calls the slider and board initializers.
-     * @see playSound
-     * @see initSlider
+     * Initialization method for the Board, Slider functions and the save game file chooser.
      */
+    @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        //sound.playSound(Sound.SoundTypes.BACKGROUND);
         initSlider ();
         initEmptyBoard();
         initSaveChooser();
@@ -154,7 +142,7 @@ public class GameBoardController implements Initializable{
 
     @FXML
     /**
-     * Method that allows the user to select any preset or saved game boards and cell states.
+     * Populates the ChoiceBox with options referencing existing save file names.
      */
     private void initSaveChooser(){
         saveChooser.setItems(FXCollections.observableArrayList("UserSave", "Gliders", "Boring", "Propeller","Flower"));
@@ -162,12 +150,7 @@ public class GameBoardController implements Initializable{
     }
     @FXML
      /**
-     * Slider
-     * @since 0.7 
-     * The method that initiates the slider function.
-     * The functions of the slider based on the game speed.
-     * @see gameBoardModel (setGameSpeed)
-     * @see GameSpeedControl
+     * Adds a listener to the slider that reports the slider value to gamespeedControl.setGameSpeed()
      */
     private void initSlider (){
         gameSpeedControl.setGameSpeed(speedSlider.valueProperty().doubleValue());        
@@ -181,9 +164,7 @@ public class GameBoardController implements Initializable{
                 
     @FXML
     /**
-     * Method that sets up the game board & cells.
-     * The main initializer that creates a board based on the properties set in the code.
-     * @see GameBoardCell
+     * Sets up the game board & cells based on the board size and cell states set in the model.
      */
     private void initBoard() {
         cellViewArray = new GameBoardTile[gameBoardModel.getXmax()][gameBoardModel.getYmax()];
@@ -199,12 +180,8 @@ public class GameBoardController implements Initializable{
                  * Does not use the "GameBoardCell" object for improved performance
                  */
                 gameBoardTile.refreshTile(gameBoardModel.getCellIsAlive(i, j));
-                gameBoardTile.getTile().setOnAction(new EventHandler<ActionEvent>(){
-                
+                gameBoardTile.getTile().setOnAction(new EventHandler<ActionEvent>(){                
                     @Override
-                    /**
-                     * Method for refreshing the board.
-                     */
                     public void handle(ActionEvent event) {
                         writeCellClickToModel(tileId);
                         refreshBoard();
@@ -214,11 +191,11 @@ public class GameBoardController implements Initializable{
             }
         }
     }
+    
     /**
-     * Method that initializes an "empty" board.
-     * An empty board contains exclusively dead cells.
-     * The board starts the same way as like in 'initBoard'
-     * @see initBoard
+     * Initializes an empty board.
+     * it first calls gameBoardModel.initCellStates() to set all cell states in the model to dead,
+     * then it updates the view with an empty game board using initBoard()
      */
     private void initEmptyBoard(){
         gameBoardModel.initCellStates();
@@ -227,12 +204,9 @@ public class GameBoardController implements Initializable{
     
     @FXML
      /**
-     * Method that controls if the game is running or not.
-     * If the game is running the stopGame method will execute.
-     * If the game isnt running, the startGame method will execute.
+     * Checks the gameRunning flag to determine if it's going to pause the game, or resume it.
      */
-    private void startStopGame(){
-        
+    private void startStopGame(){       
         if(gameRunning){
             stopGame();
         }
@@ -243,16 +217,14 @@ public class GameBoardController implements Initializable{
     
     @FXML
     /**
-     * Method that controls the actions when the game is commenced with the 'Start' button.
+     * Starts a thread that runs an iteration according to the game rules.
+     * It then pauses for a length of time set by the user, and repeats untill the game is paused by another process setting the gameRunning flag to false.
+     * Background audio is started, and the text on the start/stop button is changed to "stop" to reflect what the next action of the button will be.
      */
     private void startGame(){
         if(gameRunning){
             return;
         }
-        /**
-         * Music plays when the button is pressed.
-         * @see Sound
-         */
         (new Sound(Sound.SoundTypes.START)).playSound();
         backgroundSound.playSound();
         gameRunning = true;
@@ -260,27 +232,22 @@ public class GameBoardController implements Initializable{
                 
         new Thread(new Runnable() {
             @Override
-            /**
-             * Runs the board with steps.
-             */
             public void run() {
                 while (gameRunning == true) {
+                    /**
+                     * Using runLater ensures the View is updated continiously.
+                     */
                     Platform.runLater(new Runnable() {
                     @Override
-                    /**
-                     * Method that repeatedly runs "step".
-                     */
                         public void run() {
                             step();                            
                         }
                         });
                         try {
-                            /**
-                             * Waits for 1 second.
-                             */
                             Thread.sleep(gameSpeedControl.getTickTime());
                         }
-                        catch (InterruptedException ex) {}
+                        catch (InterruptedException ex) {
+                        }
                 }
             }
         }).start();     
@@ -288,16 +255,14 @@ public class GameBoardController implements Initializable{
     
     @FXML
     /**
-     * The method that is executed when the game is commanded to stop running.
+     * Sets the gameRunning flag to false to stop the game from playing.
+     * The change in the game running flag is observed by the process iterating the changes to the board, and makes it stop.
+     * Pauses the background audio and the text on the start/stop button is changed to "start" to reflect what the next action of the button will be.
      */
     private void stopGame(){
         if(!gameRunning){
             return;
         }
-        /**
-         * A different sound effect is played when the game is stopped.
-         * @see Sound
-         */
         (new Sound(Sound.SoundTypes.STOP)).playSound();
         backgroundSound.pauseSound();
         gameRunning = false;
@@ -307,7 +272,10 @@ public class GameBoardController implements Initializable{
     @FXML
     /**
      * Method for executing a step.
+     * Calls the model to run gameLogic, advancing the state of the model with one iteration.
      * Tells the counter to add one to the integer value for each step.
+     * Adds +1 to the Round counter label in the view.
+     * Runs through the changes in the model one cell at a time, given by gameBoardModel.takeNextCellChange(), and updates the view of the board.
      */
     private void step (){        
         gameBoardModel.gameLogic();
@@ -318,13 +286,13 @@ public class GameBoardController implements Initializable{
             if (GameBoardCell == null){
                 break;
             }
-            refreshButtonAtCoordinates(GameBoardCell);            
+            refreshButtonFromGameBoardCell(GameBoardCell);            
         }
     }
 
     @FXML
      /**
-     * Method for executing the sound from the step button, and calling the step method.
+     * Executes a single iteration of the game board.
      */
     private void singleStep(){
         (new Sound(Sound.SoundTypes.CLICK)).playSound();
@@ -333,9 +301,7 @@ public class GameBoardController implements Initializable{
     
     @FXML
     /**
-    * Method for clearing the board as well as the round counter.
-    * The CLICK sound is played when the associated button is pressed
-    * @see Sound
+    * Used for wiping the board and reset the round counter.
     */
     private void clearBoard(){
         (new Sound(Sound.SoundTypes.CLICK)).playSound();
@@ -353,8 +319,9 @@ public class GameBoardController implements Initializable{
         gameBoardModel.initCellStates();
         rePaintBoard();        
     }
+    
     /**
-     * Method for resetting the board to it's default state (When the program first runs).
+     * Resets the view of the board according to the model.
      */    
     private void rePaintBoard(){
         for (int i = 0; i<gameBoardModel.getXmax(); i++){
@@ -364,9 +331,10 @@ public class GameBoardController implements Initializable{
             }
         }
     }
+    
     /**
-     * Class... 
-     * @param buttonId todo
+     * Changes the state of a cell in the model when it's clicked in the view.
+     * @param buttonId is used to determine the cell's x and y coordinates in cellIsAliveArray in the model.
      */
     private void writeCellClickToModel(String buttonId){
         int p1 = buttonId.indexOf("_",0);
@@ -377,27 +345,26 @@ public class GameBoardController implements Initializable{
     }
     
     /**
-     * Method that updates the view of the whole board from list.
+     * Updates the view with a single cell change.
+     * Should only be called when there's exactly one cell change to handle.
      */
     private void refreshBoard(){
-        GameBoardCell GameBoardCell = gameBoardModel.takeNextCellChange();
-        refreshButtonAtCoordinates(GameBoardCell);
+        GameBoardCell gameBoardCell = gameBoardModel.takeNextCellChange();
+        refreshButtonFromGameBoardCell(gameBoardCell);
     }    
 
     /**
-     * Method that gets the X and Y coordinates from the game board.
-     * Refreshes a certain button based on its status (checks if its alive).
-     * @see GameBoardModel
-     * @param gameBoardCell todo
+     * Sets the view state of a game board tile based on the corresponding status of the game board cell in the model.
+     * @param gameBoardCell the game board cell object that contains x and y coordinates used for updating the live/dead status the view of the tile
      */
-    protected void refreshButtonAtCoordinates(GameBoardCell gameBoardCell){        
+    protected void refreshButtonFromGameBoardCell(GameBoardCell gameBoardCell){        
         GameBoardTile gameBoardTile = cellViewArray[gameBoardCell.getX()][gameBoardCell.getY()];
         gameBoardTile.refreshTile(gameBoardCell.isAlive());
     }
     
     @FXML
     /**
-     * Method that resizes the board based on integer values typed into TextField (X and Y).
+     * Method that resizes the board based on values typed into TextField (X and Y).
      */
     private void setBoardSize(){
         (new Sound(Sound.SoundTypes.CLICK)).playSound();
@@ -407,11 +374,10 @@ public class GameBoardController implements Initializable{
         gameGrid.getChildren().clear();
         initEmptyBoard();
     }
+    
     /**
      * Loading a saved .dat file.
      * The exception handling might not be necessary as the user should not manipulate the savegame folder.
-     * @see FileIO
-     * @see stopGame
      */
     @FXML
     private void loadGameFromFile(){
@@ -431,7 +397,7 @@ public class GameBoardController implements Initializable{
             gameGrid.getChildren().get(0);
             gameGrid.getChildren().clear();
             initBoard();
-        }
+        }       
         /**
          * An alert that triggers if a certain file being loaded doesnt exist or cant be found.
          */
@@ -445,12 +411,11 @@ public class GameBoardController implements Initializable{
         }
     }
     
+    @FXML
     /**
      * Saving the current board as a .dat file.
      * the exception handling should only trigger if the user chooses to rename or delete the savegame folder.
-     * @see stopGame
      */
-    @FXML
     private void saveGameToFile(){
         try{
             stopGame();

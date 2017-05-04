@@ -12,18 +12,10 @@ package gameoflife;
  */
 public class GameSpeedControl {
 
-    private int minTickTime;
-    private int maxTickTime;
+    private int minTickTime = 100;
+    private int maxTickTime = 1000;
     private int currentTickTime;
     
-    /**
-     * Sets minimum and maximum tick time.
-     */
-    public void GameSpeedControl(){
-        minTickTime=100;
-        maxTickTime = 1000;
-    }
-
     /**
      * Calculates the tick time in milliseconds.
      * @param gameSpeed double ranging from 0-1, 0 being slow, 1 being the fastest.
