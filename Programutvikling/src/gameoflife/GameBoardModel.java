@@ -11,8 +11,8 @@ import java.util.ArrayList;
  */
 
 /**
- * The "Model" file that displays all the GUI elements.
- * The game board is created using X and Y dimensions.
+ * The model contains the data for the state of the cells, game board, and the game logic itself.
+ * 
  */
 public class GameBoardModel { 
     
@@ -21,17 +21,34 @@ public class GameBoardModel {
     private int xmax = 50;
     private int ymax = 30;
     
+    /**
+     * Returns the boards x-axis
+     * @return int containing the length of the game boards x-axis
+     */
     protected int getXmax(){
         return xmax;
     }
     
+    /**
+     * Returns the boards y-axis
+     * @return int containing the length of the game boards y-axis
+     */
     protected int getYmax(){
         return ymax;
     }
+    
+    /**
+     * Sets the boards x-axis.
+     * @param xmax this contains the new length of the x-axis.
+     */
     protected void setXmax(int xmax){
         this.xmax= xmax;
     }
     
+    /**
+     * Sets the boards y-axis.
+     * @param ymax this contains the new length of the y-axis.
+     */
     protected void setYmax(int ymax){
         this.ymax = ymax;
     }

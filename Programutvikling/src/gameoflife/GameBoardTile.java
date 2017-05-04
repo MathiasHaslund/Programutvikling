@@ -9,23 +9,20 @@ import javafx.scene.control.Button;
  * @version 0.9
  * @since 0.9 (29/04/2017)
  */
- /**
- * PseudoClass is used for the Pseudo properties of the buttons.
- * PseudoClass has different properties compared to the standard class. 
+ 
+/**
+ * Represents the visual characteristics of a tile on the game board
  */
 public class GameBoardTile {
    
    private static final PseudoClass LIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("live");
    
-   /**
-    * Class for creating a new tile object.
-    */
    private Button tile;
+   
    /**
-    * Class for the pseudo buttons associated with the Class.
-    * @see GameBoardTile
-    * @param tileId todo
-    * @param tileSize  todo
+    * Sets the tile's ID and size
+    * @param tileId unique id for referring to the tile object
+    * @param tileSize the size of the visual representation of the tile object
     */
    public GameBoardTile(String tileId, int tileSize){
        tile = new Button();
@@ -34,8 +31,9 @@ public class GameBoardTile {
     }
    
     /**
-     * Refreshes the view of a single cell based on the condition of the cell.
-     * @param cellState todo
+     * Changes the tile's pseudo class based on it's life state,
+     * so that we can change it's visual look.
+     * @param cellState boolean deciding whether the cell alive or dead. 
      */
     protected void refreshTile(boolean cellState){
             if (cellState){
@@ -46,16 +44,15 @@ public class GameBoardTile {
             }
     }
     /**
-     * Allows the size-adjustment of the tiles (X and Y properties).
-     * @param size todo
+     * Sets the size of the tile.
+     * @param size int deciding the width and height of the tile in pixels
      */
     private void setTileSize(int size){
         tile.setMinSize(size, size);
         tile.setMaxSize(size, size);
     }
     /**
-     * Method for the visual display of a tile.
-     * @return A viewable tile.
+     * @return The tile object.
      */
     protected Button getTile(){
         return tile;

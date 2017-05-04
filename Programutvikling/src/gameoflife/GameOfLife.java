@@ -17,33 +17,27 @@ import javafx.stage.Stage;
  */
 
 /**
- * The main .java file that runs all the other java,fxml and css files.
+ * The driver of the visual part of program.
  */
-
 public class GameOfLife extends Application {
     
     @Override
     /**
-     * The main method that runs the whole scene (Game board and the gui).
+     * Sets the stage, scene, title and css of the program.
      */
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("GameBoard.fxml"));
-        
+    
         Scene scene = new Scene(root);
-        /**
-         * Importing the CSS into the main stage.
-         */
+        
         scene.getStylesheets().add("gameoflife/css/GameOfLife.css");
         stage.setScene(scene);
-        /**
-         * Giving the window a title.
-         */
         stage.setTitle("The Game of Life");
         stage.show();
     }
 
     /**
-     * @param args the command line arguments
+     * @param args the command line arguments.
      */
     public static void main(String[] args) {
         launch(args);

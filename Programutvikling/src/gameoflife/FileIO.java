@@ -15,37 +15,30 @@ import java.io.IOException;
  * @since 0.9 (29/04/2017)
  */
  /**
- * Main class that operates the importing and exporting of game board configurations.
+ * FileIO is used for writing and reading game data from files.
+ * This allows the game board size and the status of each cell to be saved to a compressed lossless format using run length encoding. 
+ * The data is saved in binary, with the first 4 bytes containing the length of the x-axis as an integer, and the next 4 bytes containing the length of the y-axis.
+ * After the first 8 bytes data is saved in "blocks" of one byte, with positive numbers representing live cells, and negative numbers representing dead cells.
+ * 
+ * FileIO contains methods for {@link #writeBoardToFile saving} the existing game board to a file, and to {@link #readBoardFromFile create} a game board by reading data from a file
+ * @author Mathias
  */
 public class FileIO {
     /**
-     * Method that allows game boards to written and saved as .dat files.
-     * .dat files contain the information for the stored game board configuration.
-     * @param gameBoardModel todo
-     * @throws IOException todo
+     * Saves the current state of the board to a .dat file.
+     * 
+     * @param gameBoardModel contains information about the size of the board i.e. the number of columns/rows and whether the cells are alive or dead.
+     * @throws IOException if unable to write to file.
+     * @see readBoardFromFile
      */
     protected void writeBoardToFile(GameBoardModel gameBoardModel) throws IOException{
         File outputFile = new File ("savegame/UserSave.dat");
         DataOutputStream os;
-        /**
-        * Gathers information for the size of the game board.
-        * @see GameBoardModel.java
-        * @see GameBoardController.java
-        */
         os = new DataOutputStream(new FileOutputStream(outputFile));
         int xmax = gameBoardModel.getXmax();
-        int ymax = gameBoardModel.getYmax();
-        
+        int ymax = gameBoardModel.getYmax();        
         os.writeInt(xmax);
         os.writeInt(ymax);
-        /**
-         * Using previous code to be able to create a copy of the current status of the cells on the board.
-         * @see GameBoardController.java (GameLogic)
-         * Writes the saved code in 8-bit integers (-127 to 127)
-         * The 8-bit code written is based on the position and state of each cell on the board.
-         * Alive cells are saved as positive numbers, dead cells are saved as negative numbers.
-         * If a cell is saved as '150', it will be written as 127 23.
-         */
         int counter = 0;
         boolean last=false;
         boolean atStart=true;
@@ -71,13 +64,14 @@ public class FileIO {
         
         os.close();
     }
+    
     /**
-    * This reads the game board from the saved .dat file.
-    * @see GameBoardModel
-    * @param gameBoardModel todo
-    * @param file todo
-    * @throws IOException todo
-    * @return cellIsAliveArray todo
+    * Reads the game board from a saved .dat file.
+    * @param gameBoardModel overwrites existing data to create a new board
+    * @param file name of the file to load
+    * @throws IOException if unable to find the correct file
+    * @return cellIsAliveArray for building the new board with the correct cell statuses
+    * @see writeBoardToFile
     */
     protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
         File inputFile = new File ("savegame/"+file);
@@ -110,7 +104,7 @@ public class FileIO {
         os.close();
         return cellIsAliveArray;
     }
-        
+    /*reads the data from fillnumber and adds them to the cellIsAliveArray*/
     private int[] fillArray(boolean [][] cellIsAliveArray, int startX, int startY, byte fillNumber, boolean isAlive){
         int nextX = startX;
         int nextY = startY;
@@ -131,15 +125,7 @@ public class FileIO {
         }
         return startValue;
     }
-    /**
-     * Files are compressed in one byte (8-bit) integers.
-     * Each individual cell is saved as either a positive (alive) or negative (dead) number.
-     * Numbers range from -127 to 127.
-     * @param os
-     * @param amount
-     * @param alive
-     * @throws IOException 
-     */
+    /*writes runs to the data stream*/
     private void writeCompressedBlock(DataOutputStream os, int amount, boolean alive) throws IOException{        
         byte codedByte = (byte) amount;
         if(!alive){

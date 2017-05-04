@@ -8,45 +8,34 @@ package gameoflife;
  */
 
 /**
- * Constructor for setting the maximum, minimum and current tick time.
- * The slider in the GUI is directly tied to the values in this constructor.
- * @see GameBoardController
- * Tick time is in milliseconds.
+ * GameSpeedControl is used for {@link #setGameSpeed setting} the speed at which the game runs, and {@link #getTickTime returning} that value as needed.
  */
 public class GameSpeedControl {
-    /**
-     * Minimum tick time (Value = 0 on slider).
-     */
-    private int minTickTime = 100;
-    /**
-     * Maximum tick time (Value = 1 on slider).
-     */
-    private int maxTickTime = 1000;
-    /**
-     * Tick time based on the sliders position between 0 and 1.
-     * @see setGameSpeed (Mathematical calculation with relation to max and min tick time.)
-     * 100 <= currentTickTime >= 1000
-     */
+
+    private int minTickTime;
+    private int maxTickTime;
     private int currentTickTime;
     
-/**
- * Class for the calculation of the current tick time (adjusted with slider).
- * @see GameBoardController (initSlider)
- * @param gameSpeed  todo
- */
+    /**
+     * Sets minimum and maximum tick time.
+     */
+    public void GameSpeedControl(){
+        minTickTime=100;
+        maxTickTime = 1000;
+    }
+
+    /**
+     * Calculates the tick time in milliseconds.
+     * @param gameSpeed double ranging from 0-1, 0 being slow, 1 being the fastest.
+     */
     protected void setGameSpeed(double gameSpeed){
-        /**
-         * How the current tick time is calculated.
-         * currentTickTime is based on the slider's position between the minimum and maximum positions.
-         */
         currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
     }
 
-/**
- * Method for getting the current speed the game runs at.
- * @see GameBoardController (step)
- * @return currentTickTime (in milliseconds), which controls the delay between steps.
- */    
+    /**
+    * Gives the current tick time of the game
+    * @return currentTickTime which controls the delay in milliseconds between steps.
+    */    
     protected int getTickTime(){
         return currentTickTime;
     }

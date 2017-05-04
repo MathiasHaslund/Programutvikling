@@ -15,7 +15,7 @@ import javafx.scene.media.MediaPlayer;
 /**
  * The Sound class provides support for sound in the game.
  * 
- * Sound provides a constructor for creating sound objects used for playing music and sound effects ({@link gameoflife.Sound#Sound(SoundTypes soundName) Sound}), play/pause the sound ({@link gameoflife.Sound#playSound() playSound}, {@link gameoflife.Sound#pauseSound() pauseSound}) and stop the sound ({@link gameoflife.Sound#stopSound() stopSound}). 
+ * Sound provides a constructor for creating sound objects used for playing music and sound effects ({@link #Sound(SoundTypes soundType) Sound}), play/pause the sound ({@link #playSound() playSound} and {@link #pauseSound() pauseSound})
  */
 public class Sound {    
 
@@ -64,12 +64,4 @@ public class Sound {
     protected void pauseSound(){
         player.pause();
     }
-    
-    /**
-    * Stops sound from player.
-    * The audio is chosen when the Sound object is initialized.
-    */    
-   /* protected void stopSound(){
-        player.stop();
-    }*/
 }
