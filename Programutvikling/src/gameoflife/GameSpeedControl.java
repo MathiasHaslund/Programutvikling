@@ -1,26 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gameoflife;
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 0.9
+ * @since 0.9 (29/04/2017)
+ */
+
+/**
+ * GameSpeedControl is used for {@link #setGameSpeed setting} the speed at which the game runs, and {@link #getTickTime returning} that value as needed.
  */
 public class GameSpeedControl {
-    /*tick time in miliseconds*/
+
     private int minTickTime = 100;
     private int maxTickTime = 1000;
     private int currentTickTime;
     
-    public GameSpeedControl(int min, int max){
-                
-    }
-    
+    /**
+     * Calculates the tick time in milliseconds.
+     * @param gameSpeed double ranging from 0-1, 0 being slow, 1 being the fastest.
+     */
     protected void setGameSpeed(double gameSpeed){
         currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
+    }
+
+    /**
+    * Gives the current tick time of the game
+    * @return currentTickTime which controls the delay in milliseconds between steps.
+    */    
+    protected int getTickTime(){
+        return currentTickTime;
     }
     
 }

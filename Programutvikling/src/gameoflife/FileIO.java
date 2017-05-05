@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gameoflife;
 
 import java.io.DataInputStream;
@@ -10,29 +5,40 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 0.9
+ * @since 0.9 (29/04/2017)
+ */
+ /**
+ * FileIO is used for writing and reading game data from files.
+ * This allows the game board size and the status of each cell to be saved to a compressed lossless format using run length encoding. 
+ * The data is saved in binary, with the first 4 bytes containing the length of the x-axis as an integer, and the next 4 bytes containing the length of the y-axis.
+ * After the first 8 bytes data is saved in "blocks" of one byte, with positive numbers representing live cells, and negative numbers representing dead cells.
+ * 
+ * FileIO contains methods for {@link #writeBoardToFile saving} the existing game board to a file, and to {@link #readBoardFromFile create} a game board by reading data from a file
+ * @author Mathias
  */
 public class FileIO {
- 
+    /**
+     * Saves the current state of the board to a .dat file.
+     * 
+     * @param gameBoardModel contains information about the size of the board i.e. the number of columns/rows and whether the cells are alive or dead.
+     * @throws IOException if unable to write to file.
+     * @see readBoardFromFile
+     */
     protected void writeBoardToFile(GameBoardModel gameBoardModel) throws IOException{
-        File outputFile = new File ("savegame/testfile1.dat");
+        File outputFile = new File ("savegame/UserSave.dat");
         DataOutputStream os;
-    
         os = new DataOutputStream(new FileOutputStream(outputFile));
         int xmax = gameBoardModel.getXmax();
-        int ymax = gameBoardModel.getYmax();
-        
+        int ymax = gameBoardModel.getYmax();        
         os.writeInt(xmax);
         os.writeInt(ymax);
-        
         int counter = 0;
         boolean last=false;
         boolean atStart=true;
@@ -51,7 +57,6 @@ public class FileIO {
                     writeCompressedBlock(os, counter, last); 
                     counter = 1;
                     last=current;
-                    System.out.println("tekst"+i+j);
                 }
             }
         }
@@ -60,31 +65,18 @@ public class FileIO {
         os.close();
     }
     
-    protected void readFile() throws IOException{
-        File inputFile = new File ("savegame/testfile1.dat");
+    /**
+    * Reads the game board from a saved .dat file.
+    * @param gameBoardModel overwrites existing data to create a new board
+    * @param file name of the file to load
+    * @throws IOException if unable to find the correct file
+    * @return cellIsAliveArray for building the new board with the correct cell statuses
+    * @see writeBoardToFile
+    */
+    protected boolean[][] readBoardFromFile(GameBoardModel gameBoardModel, String file) throws IOException{
+        File inputFile = new File ("savegame/"+file);
         DataInputStream os;
-    
-        os = new DataInputStream(new FileInputStream(inputFile));
-        int xmax = os.readInt();
-        int ymax = os.readInt();
-        System.out.println(xmax);
-        System.out.println(ymax);
-        while(true){
-            try{
-                byte output = os.readByte();
-                System.out.println(output);
-            }
-            catch (EOFException e){
-                break;
-            }
-        }
-        os.close();
-    }
-    
-        protected void readBoardFromFile(GameBoardModel gameBoardModel) throws IOException{
-        File inputFile = new File ("savegame/testfile1.dat");
-        DataInputStream os;
-    
+
         os = new DataInputStream(new FileInputStream(inputFile));
         int xmax = os.readInt();
         int ymax = os.readInt();
@@ -101,7 +93,7 @@ public class FileIO {
                 if (output>0){
                     isAlive = true;
                 }                
-                    int[] startValues = fillArray(cellIsAliveArray,startX, startY, fillNumber, isAlive, xmax, ymax);
+                    int[] startValues = fillArray(cellIsAliveArray,startX, startY, fillNumber, isAlive);
                     startX = startValues[0];
                     startY = startValues[1];
             }
@@ -110,16 +102,18 @@ public class FileIO {
             }
         }
         os.close();
+        return cellIsAliveArray;
     }
-        
-    private int[] fillArray(boolean [][] cellIsAliveArray, int startX, int startY, byte fillNumber, boolean isAlive, int xmax, int ymax){
+    /*reads the data from fillnumber and adds them to the cellIsAliveArray*/
+    private int[] fillArray(boolean [][] cellIsAliveArray, int startX, int startY, byte fillNumber, boolean isAlive){
         int nextX = startX;
         int nextY = startY;
+        int ymax = cellIsAliveArray[0].length;
         int[] startValue;
         startValue = new int[2];
         for (int i = 0; i < fillNumber; i++){
-            cellIsAliveArray[nextX][nextY] = isAlive;
-            if(nextY+1>ymax){
+            cellIsAliveArray[nextX][nextY] = isAlive;            
+            if(nextY+1>=ymax){
                 nextX+=1;
                 nextY=0;
             }
@@ -131,7 +125,7 @@ public class FileIO {
         }
         return startValue;
     }
-    
+    /*writes runs to the data stream*/
     private void writeCompressedBlock(DataOutputStream os, int amount, boolean alive) throws IOException{        
         byte codedByte = (byte) amount;
         if(!alive){

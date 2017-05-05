@@ -5,18 +5,23 @@ package gameoflife;
  * @author Josef Krivan
  * @version 0.7
  * @since 0.1 (5/3/2017)
- * The methods to display the grid.
  */
 
 /**
- * The "Grid" of click-able buttons on the visual program.
+ * Represents the non visual data for a cell. 
  */
 
 public class GameBoardCell {
-    private int x;
-    private int y;
-    boolean[][] cellIsAliveArray;
+    private final int x;
+    private final int y;
+    private final boolean[][] cellIsAliveArray;
     
+    /**
+     * Sets the cell's x and y position and whether it's alive or dead.
+     * @param x is the cell's position on the x-axis
+     * @param y is the cell's position on the y-axis
+     * @param cellIsAliveArray is whether or not the cell is dead.
+     */
     public GameBoardCell(int x, int y, boolean[][] cellIsAliveArray){
         this.x=x;
         this.y=y;
@@ -24,22 +29,23 @@ public class GameBoardCell {
         
     }
     
-/**
- * @return Gets the horizontal value for the grid.
- */
-    
+    /**
+    * @return Gets the cell's position on the boards x-axis.
+    */    
     public int getX(){
         return x;
     }
+    
 /**
- * @return Gets the vertical value for the grid.
+ * @return Gets the cell's position on the boards y-axis.
  */      
     public int getY(){
         return y;
     }
-/**
- * @return Gets the state of the cell (alive or dead).
- */    
+    
+    /**
+    * @return Gets the state of the cell (alive or dead).
+    */    
     public boolean isAlive(){
         return cellIsAliveArray[x][y];
     }

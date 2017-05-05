@@ -12,6 +12,13 @@
     -fx-border-width: 1px;
     -fx-border-radius: 0px;
 }
+#saveChooser {
+    -fx-background-color: darkblue;
+    -fx-border-color: black;
+    -fx-text-fill: gold;
+    -fx-text-box-border: black;
+    -fx-text-box-fill: darkblue;
+}
 .button:live{
     -fx-background-color: yellow;
     -fx-border-color: black;
@@ -40,18 +47,25 @@
 #fourthHBox{
     -fx-spacing: 5;
 }
-#X{
+#inputX{
     -fx-padding: 0px;
 }
-#Y{
+#inputY{
     -fx-padding: 0; 
 }
 #speedSlider{
-    -fx-font-size: 16px;
+    -fx-font-size: 15px;
     -fx-padding: 0px;
     -fx-text-box-border: black;
-    -fx-control-inner-background: darkblue;
+    -fx-control-inner-background: darkblue;   
+}
+.thumb {
+    -fx-background-color: yellow;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-border-color:black;
 }
 #AnchorPane{
     -fx-background-color:gray ;
 }
+

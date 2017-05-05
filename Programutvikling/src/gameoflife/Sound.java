@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gameoflife;
 
 import java.io.File;
@@ -12,25 +7,61 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 /**
- *
- * @author Espen
+ * @author Mathias Haslund
+ * @author Josef Krivan
+ * @version 1.0
+ */
+
+/**
+ * The Sound class provides support for sound in the game.
+ * 
+ * Sound provides a constructor for creating sound objects used for playing music and sound effects ({@link #Sound(SoundTypes soundType) Sound}), play/pause the sound ({@link #playSound() playSound} and {@link #pauseSound() pauseSound})
  */
 public class Sound {    
-    public enum SoundTypes {
-        BACKGROUND, PLAY, STEP;
-    }
-    Map<String, String> soundList = new HashMap();
-    
-    public Sound(){
-        soundList.put(SoundTypes.BACKGROUND.toString(), "sneaky.mp3");
-    }    
 
-    MediaPlayer mediaPlayer;
-    protected void playSound(SoundTypes soundName){
-        
-        String soundString = soundList.get(soundName.toString());
-        Media sound = new Media(new File(soundString).toURI().toString());
-        mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+    /**
+    * Enumeration that holds the avilable sound types. This includes background music/sound, as well as sounds for clicking the different buttons.
+    */
+    public enum SoundTypes {
+        BACKGROUND, START, STOP, CLICK;
+    }
+    
+    /**
+     * Maps the SoundTypes enumerations to the file name of the audio files.
+     */
+    private Map<String, String> soundList = new HashMap();
+    
+    /**
+    * Media player object the play/pause/stop methods uses.
+    */ 
+    private MediaPlayer player;
+    
+    /**
+    * Creates a sound object using a specific SoundType.
+    * @param soundType Used for selecting the correct audio file.
+    */  
+    public Sound(SoundTypes soundType){
+        soundList.put(SoundTypes.BACKGROUND.toString(), "sound/sneaky.wav");
+        soundList.put(SoundTypes.START.toString(), "sound/start.wav");
+        soundList.put(SoundTypes.STOP.toString(), "sound/stop.wav");
+        soundList.put(SoundTypes.CLICK.toString(), "sound/click.wav");
+        String soundString = soundList.get(soundType.toString());
+        Media currentSound = new Media(new File(soundString).toURI().toString());
+        player = new MediaPlayer(currentSound);
+    }    
+    /**
+    * Plays sound from player.
+    * The audio is chosen when the Sound object is initialized.
+    */
+    protected void playSound(){
+        player.play();
+    }
+    
+    /**
+    * Pauses sound from player.
+    * The audio is chosen when the Sound object is initialized.
+    */    
+    protected void pauseSound(){
+        player.pause();
     }
 }

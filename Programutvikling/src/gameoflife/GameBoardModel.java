@@ -1,7 +1,10 @@
 package gameoflife;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 /**
@@ -12,96 +15,118 @@ import java.util.concurrent.TimeUnit;
  */
 
 /**
- * The "Model" file that displays all the GUI elements.
+ * The model contains the data for the state of the cells, size of the model, and the game logic itself.
+ * 
  */
 public class GameBoardModel { 
+    
     /**
-     * Tick time in miliseconds.
+     * A list ontaining the coordinates of cells that has changed status from alive to dead and vice versa.
      */
-    private int minTickTime = 100;
-    private int maxTickTime = 1000;
-    private int currentTickTime;
-      /**
-     * Function for setting the speed with the slider.
-     * @see initSlider
-     * @param gameSpeed 
-     */
-    protected void setGameSpeed(double gameSpeed){
-        currentTickTime= (int)(1.0/(1.0/maxTickTime + gameSpeed*(1.0/minTickTime - 1.0/maxTickTime)));
-    }
-    
     private ArrayList<GameBoardCell> cellChangeList = new ArrayList<GameBoardCell>();
+    /**
+     * The array containing the information of whether each cell is alive or dead.
+     */
     private boolean cellIsAliveArray[][];
-    private int xmax = 10;
-    private int ymax = 15;
+    /**
+     * The length of the models x-axis.
+     */
+    private int xmax = 50;
+    /**
+     * The length of the models y-axis.
+     */
+    private int ymax = 30;
     
+    /**
+     * Returns the length of the board's x-axis.
+     * @return int containing the length of the game boards x-axis
+     */
     protected int getXmax(){
         return xmax;
     }
     
+    /**
+     * Returns the length of the board's y-axis
+     * @return int containing the length of the game boards y-axis
+     */
     protected int getYmax(){
         return ymax;
     }
+    
+    /**
+     * Sets the length of the board's x-axis.
+     * @param xmax this contains the new length of the x-axis.
+     */
     protected void setXmax(int xmax){
         this.xmax= xmax;
     }
     
+    /**
+     * Sets the length of the board's y-axis.
+     * @param ymax this contains the new length of the y-axis.
+     */
     protected void setYmax(int ymax){
         this.ymax = ymax;
     }
     
-    
     /**
-     * Returns the tick time in miliseconds.
-     */
-    protected int getCurrentTickTime(){
-        return currentTickTime;
-    }
-    /**
-     * Checks for the cell states adjacent to the current cell. 
+     * Populates the cellIsAliveArray with dead cells, using xmax and ymax to set the dimentions of the array.
      */
     protected void initCellStates (){
-        cellIsAliveArray = new boolean[xmax][ymax];
-        initCellStatesFromArray(cellIsAliveArray);
+        /**
+         * Relies on the fact that boolean arrays are initialized with false as the default value
+         */
+        this.cellIsAliveArray = new boolean[xmax][ymax];
     }
+    
     /**
-     * 
-     * @param cellIsAliveArray 
+     * Populates the cellIsAliveArray with cells whose status comes from the input parameter, using xmax and ymax to set the dimentions of the array.
+     * @param cellIsAliveArray contains the cell statuses to populate the array with.
      */
     protected void initCellStatesFromArray(boolean[][] cellIsAliveArray){
+        this.cellIsAliveArray = new boolean[xmax][ymax];
         for (int i=0; i<xmax; i++){
             for (int j=0; j<ymax; j++){
-                cellIsAliveArray[i][j] = false;
+                this.cellIsAliveArray[i][j] = cellIsAliveArray[i][j];
             }
         }
     }
+    
     /**
-     * Changes the state of the cell.
-     * @param x
-     * @param y 
+     * Changes the cells life state to the opposite.
+     * @param x The cells x-axis coordinate in the cellIsAliveArray.
+     * @param y The cells y-axis coordinate in the cellIsAliveArray.
      */
     protected void toggleCellState (int x, int y){
         cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         addToCellChangeList(x, y);
     }
+    
      /**
-     * @param x
-     * @param y
-     * @return The cell to an alive or dead state. 
+     * Checks if the cell is alive
+     * Is an alternative to the isAlive() method in gameBoardCell.java.
+     * It's used to increase performance by not creating gameBoardCell objects for every single position in the array when the board is drawn or re-drawn,
+     * @param x The cells x-axis coordinate in the cellIsAliveArray.
+     * @param y The cells y-axis coordinate in the cellIsAliveArray.
+     * @return A boolean value, false=dead, true=alive.
      */
     protected boolean getCellIsAlive(int x, int y){
         return cellIsAliveArray [x][y];
     }
+    
      /**
-     * Adds/Checks a new cell and its state.
-     * @param x
-     * @param y 
+     * Adds a cell to cellChangeList.
+     * This is used to store information on which cells have changed their life/death state.
+     * @param x The cells x-axis coordinate in the cellIsAliveArray.
+     * @param y The cells y-axis coordinate in the cellIsAliveArray.
      */
-    protected void addToCellChangeList (int x, int y){        
+    private void addToCellChangeList (int x, int y){        
         cellChangeList.add(new GameBoardCell(x, y, cellIsAliveArray));
     }
+    
     /**
-     * @return Nothing if Length is Zero. 
+     * Saves the first object in cellChange list to a local variable, deletes it from the list, and returns the local variable.
+     * @return The first GameBoardCell element in the cellChangeList. Returns null if there are no objects in the cell change list.
      */
     protected GameBoardCell takeNextCellChange(){
         int listLength = cellChangeList.size();
@@ -112,10 +137,12 @@ public class GameBoardModel {
         cellChangeList.remove(0);
         return gameBoardCell;
     }
-      /**
-     * @param x
-     * @param y
-     * @return True if cell is inside the game board, false if not.
+    
+     /**
+     * Checks whether or not the given coordinates are outside the bounds of the model.
+     * @param x the x-axis coordinates to check.
+     * @param y the y-axis coordinates to check.
+     * @return True if coordinates are outside the model, returns false if they are inside.
      */
     private boolean isOutsideBoard(int x, int y){
         if (x<0 || x>=xmax || y<0 || y>=ymax){
@@ -125,11 +152,12 @@ public class GameBoardModel {
             return false;
         }
     }
+    
     /**
-     * Checks if current cell is a cell on the board.
-     * @param x
-     * @param y
-     * @return A value based on the number of living cells around one specific cell.
+     * Counts the amount of live cells among the 8 closest neighbours according to the rules of GoL.
+     * @param x the center cell's position on the x-axis.
+     * @param y the center cell's position on the y-axis.
+     * @return An integer number equal to the number of live neighbours.
      */
     private int countLiveNeighbours(int x, int y){
         int counter = 0;
@@ -151,12 +179,11 @@ public class GameBoardModel {
     }
     /**
      * The process of the game (according to the game of life rules/logic).
-     * It counts the cells based on boolean values for alive and dead cells around.
-     * Determines whether certain cells will be dead or alive.
-     * Repeats the calculations for every cell on the game board.
+     * Determines whether certain cells will be dead or alive in the next iteration.
+     * Repeats the calculations for every cell position in the model.
+     * @see <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules">The rules for Game of Life</a>
      */
     protected void gameLogic(){
-        long start = System.nanoTime();
         for (int i = 0; i<xmax; i++){
             for (int j = 0; j<ymax; j++){
 		int counter = countLiveNeighbours(i, j);
@@ -172,15 +199,86 @@ public class GameBoardModel {
 		}					
             }
         }
-        long afterCount = System.nanoTime();
         for (int i = 0; i<cellChangeList.size(); i++){
             GameBoardCell gameBoardCell = cellChangeList.get(i);
             int x = gameBoardCell.getX();
             int y = gameBoardCell.getY();
             cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
         }
-        long afterCellChangeList = System.nanoTime();
-        System.out.println("after count: "+((afterCount-start)/1000000.0));
-        System.out.println("after cell change list: "+((afterCellChangeList-start)/1000000.0));
+    }
+    
+    /**
+     * Attempt at running the game logic on 4 parallel threads. It runs, but the board does not update correctly. I assume this is because the board is updated using Platform.runLater(), and not animations. 
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
+    protected void gameLogicThreads() throws InterruptedException, ExecutionException{
+        int threadAmounts = 4;
+        int batchSize = xmax/threadAmounts;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadAmounts);
+        
+        final int startX1 = 0;
+        final int stopX1 = startX1 + batchSize - 1;
+        final Future future1 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX1, stopX1);               
+            }           
+        });
+        final int startX2 = stopX1+1;
+        final int stopX2 = startX2 + batchSize - 1;
+        
+        final Future future2 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX2, stopX2);               
+            }           
+        });
+        final int startX3 = stopX2+1;
+        final int stopX3 = startX3 + batchSize - 1;
+        
+        final Future future3 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX3, stopX3);               
+            }           
+        });
+        final int startX4 = stopX3+1;
+        final int stopX4 = xmax - 1;
+        
+        final Future future4 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX4, stopX4);               
+            }           
+        });
+        
+        future1.get();
+        future2.get();
+        future3.get();
+        future4.get();
+        
+        executorService.shutdown();
+           
+        for (int i = 0; i<cellChangeList.size(); i++){
+            GameBoardCell gameBoardCell = cellChangeList.get(i);
+            int x = gameBoardCell.getX();
+            int y = gameBoardCell.getY();
+            cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
+        }
+    }
+    
+    protected void gameLogicPartial(int startX, int stopX){
+        for (int i = startX; i<=stopX; i++){
+            for (int j = 0; j<ymax; j++){
+		int counter = countLiveNeighbours(i, j);
+		if (getCellIsAlive(i, j) == true){
+                    if (counter<2 || counter>3){
+                        addToCellChangeList(i, j);
+                    }
+		}
+                else {
+                    if (counter == 3){
+			addToCellChangeList(i, j);
+                    }
+		}					
+            }
+        }
     }
 }
