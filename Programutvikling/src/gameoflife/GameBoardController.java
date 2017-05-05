@@ -236,6 +236,8 @@ public class GameBoardController implements Initializable{
                 while (gameRunning == true) {
                     /**
                      * Using runLater ensures the View is updated continiously.
+                     * This was used instead of animations because of the lack of man hours being a group of 1 instead of 3.
+                     * GameBoardModel.gameLogicThreads() has support for using threads to run the game logic, but seems to work poorly with Platform.runLater()
                      */
                     Platform.runLater(new Runnable() {
                     @Override

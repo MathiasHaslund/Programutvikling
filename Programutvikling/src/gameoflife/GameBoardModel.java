@@ -1,6 +1,10 @@
 package gameoflife;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 /**
@@ -200,6 +204,81 @@ public class GameBoardModel {
             int x = gameBoardCell.getX();
             int y = gameBoardCell.getY();
             cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
+        }
+    }
+    
+    /**
+     * Attempt at running the game logic on 4 parallel threads. It runs, but the board does not update correctly. I assume this is because the board is updated using Platform.runLater(), and not animations. 
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
+    protected void gameLogicThreads() throws InterruptedException, ExecutionException{
+        int threadAmounts = 4;
+        int batchSize = xmax/threadAmounts;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadAmounts);
+        
+        final int startX1 = 0;
+        final int stopX1 = startX1 + batchSize - 1;
+        final Future future1 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX1, stopX1);               
+            }           
+        });
+        final int startX2 = stopX1+1;
+        final int stopX2 = startX2 + batchSize - 1;
+        
+        final Future future2 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX2, stopX2);               
+            }           
+        });
+        final int startX3 = stopX2+1;
+        final int stopX3 = startX3 + batchSize - 1;
+        
+        final Future future3 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX3, stopX3);               
+            }           
+        });
+        final int startX4 = stopX3+1;
+        final int stopX4 = xmax - 1;
+        
+        final Future future4 = executorService.submit(new Runnable() {
+            public void run() {
+                gameLogicPartial(startX4, stopX4);               
+            }           
+        });
+        
+        future1.get();
+        future2.get();
+        future3.get();
+        future4.get();
+        
+        executorService.shutdown();
+           
+        for (int i = 0; i<cellChangeList.size(); i++){
+            GameBoardCell gameBoardCell = cellChangeList.get(i);
+            int x = gameBoardCell.getX();
+            int y = gameBoardCell.getY();
+            cellIsAliveArray[x][y] = !cellIsAliveArray [x][y];
+        }
+    }
+    
+    protected void gameLogicPartial(int startX, int stopX){
+        for (int i = startX; i<=stopX; i++){
+            for (int j = 0; j<ymax; j++){
+		int counter = countLiveNeighbours(i, j);
+		if (getCellIsAlive(i, j) == true){
+                    if (counter<2 || counter>3){
+                        addToCellChangeList(i, j);
+                    }
+		}
+                else {
+                    if (counter == 3){
+			addToCellChangeList(i, j);
+                    }
+		}					
+            }
         }
     }
 }
